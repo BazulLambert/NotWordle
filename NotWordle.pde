@@ -1,3 +1,5 @@
+// commentsAreForChumps = false;
+
 void settings(){
 size(800, 800);
 } // settings
