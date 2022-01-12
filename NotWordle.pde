@@ -1,7 +1,6 @@
 // commentsAreForChumps = false;
 
 String word = new String("blaze");
-String guess = new String("based");
 StringList guesses = new StringList();
 
 PVector pos;
@@ -36,7 +35,7 @@ void draw(){
     for(int i = 0; i < 5; i++){
       boolean p = false;
       for(int c = 0; c < 5; c++){
-        if(guesses.get(g).charAt(c) == word.charAt(i)){
+        if(guesses.get(g).charAt(i) == word.charAt(c)){
           fill(present);
           p = true;
         }
