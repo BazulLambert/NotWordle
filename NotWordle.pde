@@ -1,4 +1,15 @@
 // commentsAreForChumps = false;
+
+// Missing features:
+// 1. random word selection
+// 2. making sure that the entered string is a valid word
+// 3. multiplayer
+// 4. advancing to next word after a win or loss
+// 5. ability to lose
+// 6. sound
+// 7. animations
+// 8. better graphics
+
 boolean victory = false;
 
 String word = new String("blaze");
