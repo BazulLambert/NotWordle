@@ -190,6 +190,8 @@ void keyPressed(){
           if(wordlist[i].equals( new String(inputWord))){
             validWord = true;
             break;
+          } else {
+            validWord = false;
           }
         }
       }
