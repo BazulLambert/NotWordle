@@ -1,16 +1,19 @@
 // commentsAreForChumps = false;
 
 // Missing features:
-// 1. random word selection
-// 2. making sure that the entered string is a valid word
+// 1. random word selection [DONE] 
+// 2. making sure that the entered string is a valid word [DONE]
 // 3. multiplayer
 // 4. advancing to next word after a win or loss
-// 5. ability to lose
+// 5. ability to lose [DONE]
 // 6. sound
 // 7. animations
 // 8. better graphics
 
+String[] wordlist;
+
 boolean victory = false;
+boolean defeat = false;
 
 String word = new String("blaze");
 StringList guesses = new StringList();
@@ -36,6 +39,13 @@ size(800, 800);
 } // settings
 
 void setup(){
+  wordlist = loadStrings("wordlist.txt");
+  if(wordlist == null){ 
+    println("ERROR: wordlist.txt not found");
+  }
+  word = wordlist[int(random(0, wordlist.length+1))].toString();
+  println("Word to guess is: "+ word);
+  
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
   noStroke();
   
@@ -92,6 +102,8 @@ void draw(){
   
   if(guesses.get(guesses.size()-1).equals(word)){
     victory = true;
+  } else if(guesses.size() == guessesMax){
+    defeat = true;
   }
   
   if(victory){
@@ -100,8 +112,14 @@ void draw(){
     text("A winner is (You)!", width/2, 0);
     popStyle();
   }
+  if(defeat){
+    pushStyle();
+    textSize(50);
+    text("You lost ("+word+")", width/2, 0);
+    popStyle();
+  }
   
-  if(!victory){
+  if(!victory || defeat){
     // Draw text cursor
     float x = letterSize*letterBoxRatio*cursorIndex;
     float y = letterSize*letterBoxRatio*guesses.size();
@@ -119,11 +137,21 @@ void draw(){
 } // draw
 
 void keyPressed(){
-  if(!victory){
+  if(!victory || defeat){
     if(cursorIndex == 5 && keyCode == ENTER){
-      guesses.append(new String(inputWord));
+      boolean validWord = false;
+      for(int i = 0; i < wordlist.length; i++){
+        if(wordlist[i].equals( new String(inputWord))){
+          validWord = true;
+          break;
+        }
+      }
+      if(validWord){
+        guesses.append(new String(inputWord));
+      } else {
+        println("'" + new String(inputWord) + "' is not in the list of valid words.");
+      }
       inputWord = new char[5];
-      println("append");
       cursorIndex = 0;
     }
     if(cursorIndex < 5 && Character.isLetter(key)){
