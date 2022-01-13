@@ -48,9 +48,6 @@ void setup(){
   
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
   noStroke();
-  
-  guesses.append("based");
-  guesses.append("blase");
 } // setup
 
 void draw(){
