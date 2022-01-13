@@ -130,6 +130,13 @@ void draw(){
     text("You lost ("+word+")", width/2, 0);
     popStyle();
   }
+  if(victory || defeat){
+    pushStyle();
+    textSize(20);
+    textAlign(CENTER, BOTTOM);
+    text("Press 'r' to restart", width/2, 80);
+    popStyle();
+  }
   
   if(!victory && !defeat){
     // Draw text cursor
@@ -212,6 +219,20 @@ void keyPressed(){
         // Backspace
         cursorIndex--;
         inputWord[cursorIndex] = 0;
+    }
+  } else {
+    if(keyCode == 82){ // 'r' to restart
+      victory = false;
+      defeat = false;
+      word = wordlist[int(random(0, wordlist.length+1))].toString();
+      word.toLowerCase();
+      
+      println("Word to guess is: "+ word);
+      
+      for(int i = 0; i < 26; i++){
+        letters[i] = 0;
+      }
+      guesses = new StringList();
     }
   }
 }
