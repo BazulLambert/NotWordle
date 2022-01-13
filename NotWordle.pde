@@ -96,13 +96,13 @@ void draw(){
       text(guesses.get(g).toUpperCase().charAt(i), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*g)+letterSize/6);
     }
   }
-  
-  if(guesses.get(guesses.size()-1).equals(word)){
-    victory = true;
-  } else if(guesses.size() == guessesMax){
-    defeat = true;
+  if(guesses.size() > 0){
+    if(guesses.get(guesses.size()-1).equals(word)){
+      victory = true;
+    } else if(guesses.size() == guessesMax){
+      defeat = true;
+    }
   }
-  
   if(victory){
     pushStyle();
     textSize(50);
@@ -116,7 +116,7 @@ void draw(){
     popStyle();
   }
   
-  if(!victory || defeat){
+  if(!victory && !defeat){
     // Draw text cursor
     float x = letterSize*letterBoxRatio*cursorIndex;
     float y = letterSize*letterBoxRatio*guesses.size();
@@ -134,13 +134,21 @@ void draw(){
 } // draw
 
 void keyPressed(){
-  if(!victory || defeat){
+  if(!victory && !defeat){
     if(cursorIndex == 5 && keyCode == ENTER){
-      boolean validWord = false;
-      for(int i = 0; i < wordlist.length; i++){
-        if(wordlist[i].equals( new String(inputWord))){
-          validWord = true;
+      boolean validWord = true;
+      for(int i = 0; i < guesses.size(); i++){
+        if(guesses.get(i).equals(new String(inputWord))){
+          validWord = false;
           break;
+        }
+      }
+      if(validWord == true){
+        for(int i = 0; i < wordlist.length; i++){
+          if(wordlist[i].equals( new String(inputWord))){
+            validWord = true;
+            break;
+          }
         }
       }
       if(validWord){
