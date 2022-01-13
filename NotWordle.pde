@@ -140,6 +140,15 @@ void draw(){
     }
     for(int i = 0; i < cursorIndex; i++){
         fill(textColor);
+        if(letters[inputWord[i]-'a'] == 0){
+          fill(textColor);
+        } else if(letters[inputWord[i]-'a'] == 1){
+          fill(absent);
+        } else if(letters[inputWord[i]-'a'] == 2){
+          fill(present);
+        } else if(letters[inputWord[i]-'a'] == 3){
+          fill(correct);
+        }
         textAlign(CENTER, TOP);
         text(Character.toUpperCase(inputWord[i]), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*guesses.size())+letterSize/6);
     }
