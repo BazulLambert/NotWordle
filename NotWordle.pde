@@ -12,6 +12,8 @@
 
 String[] wordlist;
 
+int[] letters = new int[26];
+
 boolean victory = false;
 boolean defeat = false;
 
@@ -46,6 +48,10 @@ void setup(){
   word = wordlist[int(random(0, wordlist.length+1))].toString();
   println("Word to guess is: "+ word);
   
+  for(int i = 0; i < 26; i++){
+    letters[i] = 0;
+  }
+  
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
   noStroke();
 } // setup
@@ -76,11 +82,18 @@ void draw(){
       boolean p = false;
       for(int c = 0; c < 5; c++){
         if(guesses.get(g).charAt(i) == word.charAt(c)){
+          if(letters[(guesses.get(g).charAt(i) - 'a')] == 0 || letters[(guesses.get(g).charAt(i) - 'a')] == 1)
+            letters[(guesses.get(g).charAt(i) - 'a')] = 2;
           fill(present);
           p = true;
+        } else {
+          if(letters[(guesses.get(g).charAt(i) - 'a')] == 0)
+            letters[(guesses.get(g).charAt(i) - 'a')] = 1;
         }
       }
      if(guesses.get(g).charAt(i) == word.charAt(i)){
+       if(letters[(guesses.get(g).charAt(i) - 'a')] == 0 || letters[(guesses.get(g).charAt(i) - 'a')] == 2)
+         letters[(guesses.get(g).charAt(i) - 'a')] = 3;
         fill(correct);
       } else if(!p){
         fill(absent);
@@ -131,6 +144,24 @@ void draw(){
         text(Character.toUpperCase(inputWord[i]), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*guesses.size())+letterSize/6);
     }
   }
+  int textSmall = 30;
+  for(int i = 0; i < 26; i++){
+    pushStyle();
+    textAlign(CENTER, BOTTOM);
+    if(letters[i] == 0){
+      fill(textColor);
+    } else if(letters[i] == 1){
+      fill(absent);
+    } else if(letters[i] == 2){
+      fill(present);
+    } else if(letters[i] == 3){
+      fill(correct);
+    }
+    textSize(textSmall);
+    text(Character.toUpperCase((char)(i + 97)), (width/2 - (26*textSmall*1.0)/2) + textSmall*i*0.95 + textSmall, height-textSmall/2);
+    popStyle();
+  }
+  
 } // draw
 
 void keyPressed(){
