@@ -37,10 +37,13 @@ color background = #121213;
 color textColor = #d7dadc;
 
 void settings(){
-size(800, 800);
+  size(800, 800);
+  smooth(4);
+  
 } // settings
 
 void setup(){
+  frameRate(60);
   wordlist = loadStrings("wordlist.txt");
   if(wordlist == null){ 
     println("ERROR: wordlist.txt not found");
@@ -48,7 +51,7 @@ void setup(){
   word = wordlist[int(random(0, wordlist.length+1))].toString();
   word.toLowerCase();
   
-  println("Word to guess is: "+ word);
+  
   
   for(int i = 0; i < 26; i++){
     letters[i] = 0;
@@ -184,6 +187,9 @@ void draw(){
 
 void keyPressed(){
   if(!victory && !defeat){
+    if(keyCode == 112){ //F1
+      println("Word to guess is: "+ word);  
+    }
     if(cursorIndex == 5 && keyCode == ENTER){
       boolean validWord = true;
       for(int i = 0; i < guesses.size(); i++){
