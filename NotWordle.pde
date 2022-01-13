@@ -46,6 +46,8 @@ void setup(){
     println("ERROR: wordlist.txt not found");
   }
   word = wordlist[int(random(0, wordlist.length+1))].toString();
+  word.toLowerCase();
+  
   println("Word to guess is: "+ word);
   
   for(int i = 0; i < 26; i++){
