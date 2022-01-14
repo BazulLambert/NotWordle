@@ -24,7 +24,7 @@ String word = new String("blaze");
 StringList guesses = new StringList();
 
 float invalidWordTimerCur = 0;
-float invalidWordTimerMax = 1.0;
+float invalidWordTimerMax = 1.5;
 String invalidWord = null;
 enum InvalidWordEnum{
   REUSED, UNKNOWN
