@@ -83,7 +83,9 @@ void setup(){
 void draw(){
   if(gameState == 0){
     runMenu();
-  } else if(gameState == 1){
+  } else if(gameState == 5){
+    network.runNetwork();
+  } else if(gameState == 10){
     runGame();
   } // gameState check
 } // draw
@@ -91,7 +93,7 @@ void draw(){
 void runMenu(){
   background(0);
   textSize(letterSize);
-  text("1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)", 50, 50);
+  text("1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)", 50, 100);
 } // runMenu
 
 void runGame(){
@@ -197,11 +199,11 @@ void runGame(){
 
 void keyPressed(){
   if(gameState == 0){
-    if(key == '1'){ gameState = 1; network.startSingleplayer(); }
-    if(key == '2'){ gameState = 1; network.startClient(network.ip, network.port); }
-    if(key == '3'){ gameState = 1; network.startServer(); }
-    if(key == '4'){ gameState = 1; network.startDebug("localhost", network.port); }
-  } else if(gameState == 1){
+    if(key == '1') network.startSingleplayer();
+    if(key == '2') network.startClient(network.ip, network.port);
+    if(key == '3') network.startServer();
+    if(key == '4') network.startDebug("localhost", network.port);
+  } else if(gameState == 10){
     if(!victory && !defeat){
       if(keyCode == 112){ //F1
         println("Word to guess is: "+ word);  
