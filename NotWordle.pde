@@ -148,27 +148,27 @@ void keyPressed(){
       println("Word to guess is: "+ word);  
     }
     if(cursorIndex == 5 && keyCode == ENTER){
-      boolean validWord = true;
+      boolean isInWordlist = false;
+      boolean isNewWord = true;
+      String newGuess = new String(inputWord);
       for(int i = 0; i < guesses.size(); i++){
-        if(guesses.get(i).equals(new String(inputWord))){
-          validWord = false;
+        if(guesses.get(i).equals(newGuess)){
+          isNewWord = false;
           break;
         }
       }
-      if(validWord == true){
+      if(isNewWord){
         for(int i = 0; i < wordlist.length; i++){
-          if(wordlist[i].equals( new String(inputWord))){
-            validWord = true;
+          if(wordlist[i].equals(newGuess)){
+            isInWordlist = true;
             break;
-          } else {
-            validWord = false;
           }
         }
       }
-      if(validWord){
-        guesses.append(new String(inputWord));
+      if(isNewWord && isInWordlist){
+        guesses.append(newGuess);
       } else {
-        println("'" + new String(inputWord) + "' is not in the list of valid words.");
+        println("'" + newGuess + "' is not in the list of valid words.");
       }
       inputWord = new char[5];
       cursorIndex = 0;
