@@ -11,6 +11,7 @@
 // 2. Showing yellow letters when a green version is present
 // 3. Wordlist is really bad
 // 4. There is a lack of good words in the wordlist
+// 5. Have onscreen feedback when an unknown word is entered
 
 String[] wordlist;
 
