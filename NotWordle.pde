@@ -39,11 +39,11 @@ void settings(){
 } // settings
 
 void setup(){
-  PImage icon = loadImage("icon.png");
+  PImage icon = loadImage("source/icon.png");
   surface.setIcon(icon);
   frameRate(60);
   
-  wordlist = loadStrings("wordlist.txt");
+  wordlist = loadStrings("source/wordlist.txt");
   if(wordlist == null)
     println("ERROR: wordlist.txt not found");
   
