@@ -190,37 +190,11 @@ void keyPressed(){
     if(keyCode == 112){ //F1
       println("Word to guess is: "+ word);  
     }
+    
     if(cursorIndex == 5 && keyCode == ENTER){
-      boolean isInWordlist = false;
-      boolean isNewWord = true;
-      String newGuess = new String(inputWord);
-      for(int i = 0; i < guesses.size(); i++){
-        if(guesses.get(i).equals(newGuess)){
-          isNewWord = false;
-          break;
-        }
-      }
-      if(isNewWord){
-        for(int i = 0; i < wordlist.length; i++){
-          if(wordlist[i].equals(newGuess)){
-            isInWordlist = true;
-            break;
-          }
-        }
-      }
-      if(isNewWord && isInWordlist){
-        guesses.append(newGuess);
-      } else {
-        invalidWordTimerCur = invalidWordTimerMax;
-        invalidWord = newGuess;
-        invalidWordType = InvalidWordEnum.UNKNOWN;
-        if(!isNewWord){
-          invalidWordType = InvalidWordEnum.REUSED;
-        }
-      }
-      inputWord = new char[5];
-      cursorIndex = 0;
-    }
+      submitWord();
+    } // submit word
+    
     if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
       inputWord[cursorIndex++] = key;
     }
@@ -228,7 +202,45 @@ void keyPressed(){
         inputWord[--cursorIndex] = 0;
   } else {
     if(keyCode == 82){ // 'r' to restart
-      victory = false;
+      resetGame();
+    }
+  }
+} // keyPressed
+
+void submitWord(){
+  boolean isInWordlist = false;
+  boolean isNewWord = true;
+  String newGuess = new String(inputWord);
+  for(int i = 0; i < guesses.size(); i++){
+    if(guesses.get(i).equals(newGuess)){
+      isNewWord = false;
+      break;
+    }
+  }
+  if(isNewWord){
+    for(int i = 0; i < wordlist.length; i++){
+      if(wordlist[i].equals(newGuess)){
+        isInWordlist = true;
+        break;
+      }
+    }
+  }
+  if(isNewWord && isInWordlist){
+    guesses.append(newGuess);
+  } else {
+    invalidWordTimerCur = invalidWordTimerMax;
+    invalidWord = newGuess;
+    invalidWordType = InvalidWordEnum.UNKNOWN;
+    if(!isNewWord){
+      invalidWordType = InvalidWordEnum.REUSED;
+    }
+  }
+  inputWord = new char[5];
+  cursorIndex = 0;
+} // submitWord
+
+void resetGame(){
+  victory = false;
       defeat = false;
       word = wordlist[int(random(0, wordlist.length+1))].toString();
       word.toLowerCase();
@@ -237,6 +249,4 @@ void keyPressed(){
       for(int i = 0; i < 26; i++)
         letters[i] = textColor;
       guesses = new StringList();
-    }
-  }
-}
+} // resetGame
