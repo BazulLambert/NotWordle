@@ -33,11 +33,14 @@ color background = #121213;
 color textColor = #d7dadc;
 
 void settings(){
+  
   size(800, 800);
   smooth(4);
 } // settings
 
 void setup(){
+  PImage icon = loadImage("icon.png");
+  surface.setIcon(icon);
   frameRate(60);
   
   wordlist = loadStrings("wordlist.txt");
