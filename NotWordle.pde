@@ -7,7 +7,7 @@
 // 4. better graphics
 
 // Bugs:
-// 1. Games freezes when pressing a ton of keys at once
+// 1. Games freezes when pressing a ton of keys at once [DONE]
 // 2. Showing yellow letters when a green version is present
 // 3. Wordlist is really bad
 // 4. There is a lack of good words in the wordlist
@@ -23,9 +23,13 @@ boolean defeat = false;
 String word = new String("blaze");
 StringList guesses = new StringList();
 
-float unknownWordTimerCur = 0;
-float unknownWordTimerMax = 1.0;
-String unknownWord = null;
+float invalidWordTimerCur = 0;
+float invalidWordTimerMax = 1.0;
+String invalidWord = null;
+enum InvalidWordEnum{
+  REUSED, UNKNOWN
+};
+InvalidWordEnum invalidWordType = null;
 
 PVector pos;
 int letterSize = 50;
@@ -131,12 +135,16 @@ void draw(){
     textAlign(CENTER, BOTTOM);
     text("Press 'r' to restart", width/2, letterSize+letterSize/2);
   }
-  if(unknownWord != null && unknownWordTimerCur >= 0){
-    fill(textColor, (unknownWordTimerCur/unknownWordTimerMax) * 255);
+  if(invalidWord != null && invalidWordTimerCur >= 0){
+    fill(textColor, (invalidWordTimerCur/invalidWordTimerMax) * 255);
     textSize(letterSize/2);
-    text("'"+unknownWord+"'"+" is not in the word list.", width/2, height-height/4);
-    if(unknownWordTimerCur > 0)
-      unknownWordTimerCur -= 1.0/frameRate;
+    if(invalidWordType == InvalidWordEnum.UNKNOWN){
+      text("'"+invalidWord+"'"+" is not in the word list.", width/2, height-height/4);
+    } else {
+      text("'"+invalidWord+"'"+" was already used.", width/2, height-height/4);
+    }
+    if(invalidWordTimerCur > 0)
+      invalidWordTimerCur -= 1.0/frameRate;
   }
   popStyle();
   
@@ -189,15 +197,19 @@ void keyPressed(){
       if(isNewWord && isInWordlist){
         guesses.append(newGuess);
       } else {
-        unknownWordTimerCur = unknownWordTimerMax;
-        unknownWord = newGuess;
-        println("'" + newGuess + "' is not in the list of valid words.");
+        invalidWordTimerCur = invalidWordTimerMax;
+        invalidWord = newGuess;
+        invalidWordType = InvalidWordEnum.UNKNOWN;
+        if(!isNewWord){
+          invalidWordType = InvalidWordEnum.REUSED;
+        }
       }
       inputWord = new char[5];
       cursorIndex = 0;
     }
-    if(cursorIndex < 5 && Character.isLetter(key))
+    if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
       inputWord[cursorIndex++] = key;
+    }
     if(cursorIndex > 0 && keyCode == BACKSPACE)
         inputWord[--cursorIndex] = 0;
   } else {
