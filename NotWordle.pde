@@ -64,6 +64,7 @@ void setup(){
   
   word = wordlist[int(random(0, wordlist.length+1))].toString();
   word.toLowerCase();
+
   for(int i = 0; i < 26; i++)
     letters[i] = textColor;
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
@@ -109,7 +110,7 @@ void draw(){
       }
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
-    
+
     // Draw each letter in the current guess
     for(int i = 0; i < 5; i++){
       fill(textColor);
