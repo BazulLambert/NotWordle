@@ -14,11 +14,25 @@ class Network{
   String ip =  "24.128.92.203";
   int port = 22985;
   
+  PApplet applet;
+  
   // ---------- ---------- ---------- ---------- ----------
   
-  Network(){
-    
+  Network(PApplet applet_){
+    applet = applet_;
   } // construct
+  
+  void startServer(){
+    s = new Server(applet, port);
+  } // startServer
+  
+  void startClient(String ip, int port){
+    c = new Client(applet, ip, port);
+  } // startClient
+  
+  void startSingleplayer(){
+    
+  } // startClient
   
   // ---------- ---------- ---------- ---------- ----------
   

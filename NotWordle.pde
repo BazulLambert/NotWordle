@@ -57,6 +57,8 @@ void settings(){
 } // settings
 
 void setup(){
+  network = new Network(this);
+  
   PImage icon = loadImage("source/icon.png");
   surface.setIcon(icon);
   frameRate(60);
@@ -81,12 +83,15 @@ void setup(){
 void draw(){
   if(gameState == 0){
     runMenu();
-  } else if(gameState == 1) runGame();
+  } else if(gameState == 1){
+    runGame();
+  } // gameState check
 } // draw
 
 void runMenu(){
-  gameState = 1;
-  // replace with menu code
+  background(0);
+  textSize(letterSize);
+  text("1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)", 50, 50);
 } // runMenu
 
 void runGame(){
@@ -191,25 +196,32 @@ void runGame(){
 } // runGame
 
 void keyPressed(){
-  if(!victory && !defeat){
-    if(keyCode == 112){ //F1
-      println("Word to guess is: "+ word);  
-    }
-    
-    if(cursorIndex == 5 && keyCode == ENTER){
-      submitWord();
-    } // submit word
-    
-    if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
-      inputWord[cursorIndex++] = key;
-    }
-    if(cursorIndex > 0 && keyCode == BACKSPACE)
-        inputWord[--cursorIndex] = 0;
-  } else {
-    if(keyCode == 82){ // 'r' to restart
-      resetGame();
-    }
-  }
+  if(gameState == 0){
+    if(key == '1'){ gameState = 1; network.startSingleplayer(); }
+    if(key == '2'){ gameState = 1; network.startClient(network.ip, network.port); }
+    if(key == '3'){ gameState = 1; network.startServer(); }
+    if(key == '4'){ gameState = 1; network.startClient("localhost", network.port); }
+  } else if(gameState == 1){
+    if(!victory && !defeat){
+      if(keyCode == 112){ //F1
+        println("Word to guess is: "+ word);  
+      }
+      
+      if(cursorIndex == 5 && keyCode == ENTER){
+        submitWord();
+      } // submit word
+      
+      if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
+        inputWord[cursorIndex++] = key;
+      }
+      if(cursorIndex > 0 && keyCode == BACKSPACE)
+          inputWord[--cursorIndex] = 0;
+    } else {
+      if(keyCode == 82){ // 'r' to restart
+        resetGame();
+      } // press r to reset
+    } // if victory or defeat
+  } // gameState
 } // keyPressed
 
 void submitWord(){
