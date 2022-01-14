@@ -6,6 +6,12 @@
 // 3. animations
 // 4. better graphics
 
+// Bugs:
+// 1. Games freezes when pressing a ton of keys at once
+// 2. Showing yellow letters when a green version is present
+// 3. Wordlist is really bad
+// 4. There is a lack of good words in the wordlist
+
 String[] wordlist;
 
 int[] letters = new int[26];
