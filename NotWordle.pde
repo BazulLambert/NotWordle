@@ -4,7 +4,7 @@
 // 1. random word selection [DONE] 
 // 2. making sure that the entered string is a valid word [DONE]
 // 3. multiplayer
-// 4. advancing to next word after a win or loss
+// 4. advancing to next word after a win or loss [DONE]
 // 5. ability to lose [DONE]
 // 6. sound
 // 7. animations
@@ -39,24 +39,19 @@ color textColor = #d7dadc;
 void settings(){
   size(800, 800);
   smooth(4);
-  
 } // settings
 
 void setup(){
   frameRate(60);
+  
   wordlist = loadStrings("wordlist.txt");
-  if(wordlist == null){ 
+  if(wordlist == null)
     println("ERROR: wordlist.txt not found");
-  }
+  
   word = wordlist[int(random(0, wordlist.length+1))].toString();
   word.toLowerCase();
-  
-  
-  
-  for(int i = 0; i < 26; i++){
-    letters[i] = 0;
-  }
-  
+  for(int i = 0; i < 26; i++)
+    letters[i] = textColor;
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
   noStroke();
 } // setup
@@ -71,13 +66,8 @@ void draw(){
   stroke(absent);
   strokeWeight(2);
   for(int i = 0; i < guessesMax; i++){
-    for(int j = 0; j < 5; j++){
-            rect(pos.x + letterSize*letterBoxRatio*j,
-            pos.y + letterSize*letterBoxRatio*i,
-            letterSize*letterBoxRatio,
-            letterSize*letterBoxRatio,
-            rectRadii);
-    }
+    for(int j = 0; j < 5; j++)
+      rect(pos.x + letterSize*letterBoxRatio*j, pos.y + letterSize*letterBoxRatio*i, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
   }
   popStyle();
   
@@ -87,23 +77,22 @@ void draw(){
       boolean p = false;
       for(int c = 0; c < 5; c++){
         if(guesses.get(g).charAt(i) == word.charAt(c)){
-          if(letters[(guesses.get(g).charAt(i) - 'a')] == 0 || letters[(guesses.get(g).charAt(i) - 'a')] == 1)
-            letters[(guesses.get(g).charAt(i) - 'a')] = 2;
+          if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor || letters[(guesses.get(g).charAt(i) - 'a')] == absent)
+            letters[(guesses.get(g).charAt(i) - 'a')] = present;
           fill(present);
           p = true;
         } else {
-          if(letters[(guesses.get(g).charAt(i) - 'a')] == 0)
-            letters[(guesses.get(g).charAt(i) - 'a')] = 1;
+          if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor)
+            letters[(guesses.get(g).charAt(i) - 'a')] = absent;
         }
       }
      if(guesses.get(g).charAt(i) == word.charAt(i)){
-       if(letters[(guesses.get(g).charAt(i) - 'a')] == 0 || letters[(guesses.get(g).charAt(i) - 'a')] == 2)
-         letters[(guesses.get(g).charAt(i) - 'a')] = 3;
+       if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor || letters[(guesses.get(g).charAt(i) - 'a')] == present)
+         letters[(guesses.get(g).charAt(i) - 'a')] = correct;
         fill(correct);
       } else if(!p){
         fill(absent);
       }
-      
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
     
@@ -121,25 +110,18 @@ void draw(){
       defeat = true;
     }
   }
-  if(victory){
-    pushStyle();
-    textSize(50);
+  pushStyle();
+  textSize(letterSize);
+  if(victory)
     text("A winner is (You)!", width/2, 0);
-    popStyle();
-  }
-  if(defeat){
-    pushStyle();
-    textSize(50);
+  if(defeat)
     text("You lost ("+word+")", width/2, 0);
-    popStyle();
-  }
   if(victory || defeat){
-    pushStyle();
-    textSize(20);
+    textSize(letterSize/3);
     textAlign(CENTER, BOTTOM);
-    text("Press 'r' to restart", width/2, 80);
-    popStyle();
+    text("Press 'r' to restart", width/2, letterSize+letterSize/2);
   }
+  popStyle();
   
   if(!victory && !defeat){
     // Draw text cursor
@@ -151,38 +133,17 @@ void draw(){
       rect(pos.x + x + letterSize/4,pos.y + y + letterSize*letterBoxRatio-cursorThick, letterSize, cursorThick);
     }
     for(int i = 0; i < cursorIndex; i++){
-        fill(textColor);
-        if(letters[inputWord[i]-'a'] == 0){
-          fill(textColor);
-        } else if(letters[inputWord[i]-'a'] == 1){
-          fill(absent);
-        } else if(letters[inputWord[i]-'a'] == 2){
-          fill(present);
-        } else if(letters[inputWord[i]-'a'] == 3){
-          fill(correct);
-        }
+        fill(letters[inputWord[i]-'a']);
         textAlign(CENTER, TOP);
         text(Character.toUpperCase(inputWord[i]), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*guesses.size())+letterSize/6);
     }
   }
-  int textSmall = 30;
+  textAlign(CENTER, BOTTOM);
+  textSize(letterSize/1.6);
   for(int i = 0; i < 26; i++){
-    pushStyle();
-    textAlign(CENTER, BOTTOM);
-    if(letters[i] == 0){
-      fill(textColor);
-    } else if(letters[i] == 1){
-      fill(absent);
-    } else if(letters[i] == 2){
-      fill(present);
-    } else if(letters[i] == 3){
-      fill(correct);
-    }
-    textSize(textSmall);
-    text(Character.toUpperCase((char)(i + 97)), (width/2 - (26*textSmall*1.0)/2) + textSmall*i*0.95 + textSmall, height-textSmall/2);
-    popStyle();
+    fill(letters[i]);
+    text(Character.toUpperCase((char)(i + 97)), (width/2 - (26*(letterSize/1.6)*1.0)/2) + (letterSize/1.6)*i*0.95 + (letterSize/1.6), height-(letterSize/1.6)/2);
   }
-  
 } // draw
 
 void keyPressed(){
@@ -216,16 +177,10 @@ void keyPressed(){
       inputWord = new char[5];
       cursorIndex = 0;
     }
-    if(cursorIndex < 5 && Character.isLetter(key)){
-      inputWord[cursorIndex] = key;
-      cursorIndex++;
-      println(cursorIndex);
-    }
-    if(cursorIndex > 0 && keyCode == BACKSPACE){
-        // Backspace
-        cursorIndex--;
-        inputWord[cursorIndex] = 0;
-    }
+    if(cursorIndex < 5 && Character.isLetter(key))
+      inputWord[cursorIndex++] = key;
+    if(cursorIndex > 0 && keyCode == BACKSPACE)
+        inputWord[--cursorIndex] = 0;
   } else {
     if(keyCode == 82){ // 'r' to restart
       victory = false;
@@ -234,10 +189,8 @@ void keyPressed(){
       word.toLowerCase();
       
       println("Word to guess is: "+ word);
-      
-      for(int i = 0; i < 26; i++){
-        letters[i] = 0;
-      }
+      for(int i = 0; i < 26; i++)
+        letters[i] = textColor;
       guesses = new StringList();
     }
   }
