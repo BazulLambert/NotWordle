@@ -47,6 +47,8 @@ color absent = #3a3a3c;
 color background = #121213;
 color textColor = #d7dadc;
 
+int gameState = 0;
+
 void settings(){
   
   size(800, 800);
@@ -72,6 +74,17 @@ void setup(){
 } // setup
 
 void draw(){
+  if(gameState == 0){
+    runMenu();
+  } else if(gameState == 1) runGame();
+} // draw
+
+void runMenu(){
+  gameState = 1;
+  // replace with menu code
+} // runMenu
+
+void runGame(){
   background(background);
   textSize(letterSize);
   
@@ -170,7 +183,7 @@ void draw(){
     fill(letters[i]);
     text(Character.toUpperCase((char)(i + 97)), (width/2 - (26*(letterSize/1.6)*1.0)/2) + (letterSize/1.6)*i*0.95 + (letterSize/1.6), height-(letterSize/1.6)/2);
   }
-} // draw
+} // runGame
 
 void keyPressed(){
   if(!victory && !defeat){

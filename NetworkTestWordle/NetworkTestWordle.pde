@@ -44,16 +44,17 @@ void draw(){
 void runMenu(){
   fill(255);
   text("1 - Start server\n2 - Start client\n3 - Self client (debug)", 50, 50);
-  if(keys.released('1')) startServer();
-  if(keys.released('2')) startClient(ip, port);
-  if(keys.released('3')) startClient("localhost", port);
 } // runMenu
 
 String testString = "";
 
-void keyPressed(){
-  if(gameState == 1) sendChar(key);
-} // keyPressed
+void keyReleased(){
+  if(gameState == 0){
+    if(key == '1') startServer();
+    if(key == '2') startClient(ip, port);
+    if(key == '3') startClient("localhost", port);
+  } else  if(gameState == 1) sendChar(key);
+} // keyReleased
 
 void sendChar(char output){
   if(s == null) c.write(output);
