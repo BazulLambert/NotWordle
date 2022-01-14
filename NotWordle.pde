@@ -14,6 +14,7 @@
 // 5. Have onscreen feedback when an unknown word is entered [DONE]
 
 String[] wordlist;
+String[] wordlistUncommon;
 
 int[] letters = new int[26];
 
@@ -64,6 +65,10 @@ void setup(){
   if(wordlist == null)
     println("ERROR: wordlist.txt not found");
   
+  wordlistUncommon = loadStrings("source/wordlist-uncommon.txt");
+  if(wordlistUncommon == null)
+    println("ERROR: wordlist-uncommon.txt not found");
+    
   word = wordlist[int(random(0, wordlist.length+1))].toString();
   word.toLowerCase();
 
@@ -218,8 +223,8 @@ void submitWord(){
     }
   }
   if(isNewWord){
-    for(int i = 0; i < wordlist.length; i++){
-      if(wordlist[i].equals(newGuess)){
+    for(int i = 0; i < wordlistUncommon.length; i++){
+      if(wordlistUncommon[i].equals(newGuess)){
         isInWordlist = true;
         break;
       }
