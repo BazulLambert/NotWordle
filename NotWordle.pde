@@ -73,7 +73,7 @@ void setup(){
   if(wordlistUncommon == null)
     println("ERROR: wordlist-uncommon.txt not found");
     
-  word = wordlist[int(random(0, wordlist.length+1))].toString();
+  word = wordlist[int(random(0, wordlist.length))].toString();
   word.toLowerCase();
 
   for(int i = 0; i < 26; i++)
@@ -272,8 +272,7 @@ void resetGame(){
       defeat = false;
       word = wordlist[int(random(0, wordlist.length+1))].toString();
       word.toLowerCase();
-      
-      println("Word to guess is: "+ word);
+
       for(int i = 0; i < 26; i++)
         letters[i] = textColor;
       guesses = new StringList();
