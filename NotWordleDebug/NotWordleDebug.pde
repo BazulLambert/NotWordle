@@ -57,6 +57,8 @@ void settings(){
 } // settings
 
 void setup(){
+  if(bazDebug) surface.setLocation(windowDebug,60);
+  
   network = new Network(this);
   
   PImage icon = loadImage("source/icon.png");
@@ -83,17 +85,19 @@ void setup(){
 void draw(){
   if(gameState == 0){
     runMenu();
-  } else if(gameState == 5){
+  } else {
     network.runNetwork();
-  } else if(gameState == 10){
-    runGame();
   } // gameState check
 } // draw
 
 void runMenu(){
   background(0);
   textSize(letterSize);
-  text("1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)", 50, 100);
+  String menuText = "";
+  if(gameState == 0) menuText = "1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)";
+  if(gameState == 5) menuText = "Players ready: " + network.players.size() + "\n1 - Start game";
+  text(menuText, 50, 100);
+  
 } // runMenu
 
 void runGame(){
@@ -203,6 +207,11 @@ void keyPressed(){
     if(key == '2') network.startClient(network.ip, network.port);
     if(key == '3') network.startServer();
     if(key == '4') network.startDebug("localhost", network.port);
+  } else if(gameState == 5){ // waiting for players
+    if(key == '1') {
+      network.sendCommand("BEGIN");
+      setGameState(10);
+    }
   } else if(gameState == 10){
     if(!victory && !defeat){
       if(keyCode == 112){ //F1
@@ -269,3 +278,8 @@ void resetGame(){
         letters[i] = textColor;
       guesses = new StringList();
 } // resetGame
+
+void setGameState(int gameState_){
+  gameState = gameState_;
+  network.printInfo("gameState " + gameState);
+} // setGameState

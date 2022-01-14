@@ -2,6 +2,9 @@
 // ========== ========== ========== ========== ==========
 // ========== === GLOBAL COLOUR VARIABLES ==== ==========
 
+boolean bazDebug = boolean(0);
+int windowDebug = (1920/2) + 100;
+
 // greyscale
 color BLACK  = #000000;
 color DGREY  = #333333;
