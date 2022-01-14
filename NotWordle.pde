@@ -1,14 +1,10 @@
 // commentsAreForChumps = false;
 
 // Missing features:
-// 1. random word selection [DONE] 
-// 2. making sure that the entered string is a valid word [DONE]
-// 3. multiplayer
-// 4. advancing to next word after a win or loss [DONE]
-// 5. ability to lose [DONE]
-// 6. sound
-// 7. animations
-// 8. better graphics
+// 1. multiplayer
+// 2. sound
+// 3. animations
+// 4. better graphics
 
 String[] wordlist;
 
