@@ -48,15 +48,23 @@ color absent = #3a3a3c;
 color background = #121213;
 color textColor = #d7dadc;
 
+PFont mochi;
+//PFont lucida; don't see any way to get the default font and restore it, the P3 docs are irritating me
+
 int gameState = 0;
 
+boolean japanese = false;
+//text("かわいい", 100,100);
+
 void settings(){
-  
   size(800, 800);
   smooth(4);
 } // settings
 
 void setup(){
+  mochi = createFont("source/MochiyPopOne-Regular.ttf", 50);
+  //lucida = loadFont("Dialog.plain-48");  
+
   if(bazDebug) surface.setLocation(windowDebug,60);
   
   network = new Network(this);
@@ -103,7 +111,11 @@ void runMenu(){
 void runGame(){
   background(background);
   textSize(letterSize);
-  
+  if(japanese){
+    textFont(mochi, letterSize*0.8);
+  } else {
+    //textFont(lucida, letterSize);
+  }
   // Draw empty grid squares
   pushStyle();
   noFill();
@@ -202,6 +214,10 @@ void runGame(){
 } // runGame
 
 void keyPressed(){
+  if(keyCode == 113){
+    japanese = !japanese;
+    print(japanese);
+  }
   if(gameState == 0){
     if(key == '1') network.startSingleplayer();
     if(key == '2') network.startClient(network.ip, network.port);
