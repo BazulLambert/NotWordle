@@ -48,15 +48,25 @@ color absent = #3a3a3c;
 color background = #121213;
 color textColor = #d7dadc;
 
+PFont mochi;
+PFont lucida;
+// MUNA - don't see any way to get the default font and restore it, the P3 docs are irritating me
+// BAZ - Default font is "Lucida Sans Regular";
+
 int gameState = 0;
 
+boolean japanese = false;
+//text("かわいい", 100,100);
+
 void settings(){
-  
   size(800, 800);
   smooth(4);
 } // settings
 
 void setup(){
+  mochi = createFont("source/MochiyPopOne-Regular.ttf", 50);
+  lucida = createFont("Lucida Sans Regular", 50);
+
   if(bazDebug) surface.setLocation(windowDebug,60);
   
   network = new Network(this);
@@ -73,7 +83,7 @@ void setup(){
   if(wordlistUncommon == null)
     println("ERROR: wordlist-uncommon.txt not found");
     
-  word = wordlist[int(random(0, wordlist.length+1))].toString();
+  word = wordlist[int(random(0, wordlist.length))].toString();
   word.toLowerCase();
 
   for(int i = 0; i < 26; i++)
@@ -103,7 +113,11 @@ void runMenu(){
 void runGame(){
   background(background);
   textSize(letterSize);
-  
+  if(japanese){
+    textFont(mochi, letterSize*0.8);
+  } else {
+    //textFont(lucida, letterSize);
+  }
   // Draw empty grid squares
   pushStyle();
   noFill();
@@ -202,6 +216,10 @@ void runGame(){
 } // runGame
 
 void keyPressed(){
+  if(keyCode == 113){
+    japanese = !japanese;
+    print(japanese);
+  }
   if(gameState == 0){
     if(key == '1') network.startSingleplayer();
     if(key == '2') network.startClient(network.ip, network.port);
@@ -272,8 +290,7 @@ void resetGame(){
       defeat = false;
       word = wordlist[int(random(0, wordlist.length+1))].toString();
       word.toLowerCase();
-      
-      println("Word to guess is: "+ word);
+
       for(int i = 0; i < 26; i++)
         letters[i] = textColor;
       guesses = new StringList();

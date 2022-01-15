@@ -1,1 +1,11 @@
+*NotWordleDebug*
 NotWordleDebug/
+/NotWordleDebug/
+NotWordleDebug*
+NotWordleDebug/*
+NotWordleDebug/source/
+NotWordleDebug/source*
+NotWordleDebug/source/*
+NotWordleDebug/Config.pde
+NotWordleDebug/Network.pde
+NotWordleDebug/NotWordleDebug.pde
