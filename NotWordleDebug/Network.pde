@@ -48,6 +48,7 @@ class Network{
     s = new Server(applet, port);
     host = Host.SERVER;
     setGameState(5);
+    Me.ID = -1;
   } // startServer
   
   void startDebug(String ip, int port){
@@ -77,14 +78,26 @@ class Network{
   
   void runServer(){
     switch(gameState){
-      case 0: break;
+      case 0: break; // 0 waiting on game select
       
-      case 5:
+      case 5: // 5 waiting for players
       runMenu();
       initPlayers();
       break;
       
-      case 10: runGame(); break;
+      case 6: // 6 starting game
+      network.sendCommand("BEGIN");
+      setGameState(7);
+      break;
+      
+      case 7: // 7 sending word
+      word = newWord();
+      resetGame(word);
+      network.sendCommand("NEWWORD",word);
+      setGameState(10);
+      break;
+      
+      case 10: runGame(); break; // 10 run game
       
       default: break;
     } // switch gameState
@@ -94,18 +107,29 @@ class Network{
   
   void runClient(){
     switch(gameState){
-      case 0: break;
+      case 0: break; // 0 waiting on game select
       
-      case 5:
+      case 5: // 5 joining server
       sendCommand("JOIN");
       setGameState(6);
       break;
       
-      case 6:
-      if(getCommand("BEGIN")) setGameState(10);
+      case 6: // 6 waiting for begin command from server
+      if(getCommand("BEGIN")) setGameState(7);
       break;
       
-      case 10: runGame(); break;
+      case 7: // 7 waiting for word
+      if(getCommand("NEWWORD")){
+        resetGame(dataInfo);
+        setGameState(10);
+      }
+      break;
+      
+      case 10:
+      runGame();
+      if(getCommand("BEGIN")) setGameState(7); // reset if server prompts
+      break; // 10 run game
+      
       
       default: break;
     } // switch gameState
@@ -147,6 +171,10 @@ class Network{
   
   // -----
   
+  String dataCommand;
+  int dataID;
+  String dataInfo;
+  
   String[] getData(){
     if(host == Host.CLIENT) return getServerData();
     if(host == Host.SERVER) return getClientData();
@@ -160,6 +188,9 @@ class Network{
       String input = c.readString();
       input = input.substring(0, input.indexOf("\n"));
       data = split(input, ',');
+      dataCommand = data[0]; // messy, could be combined with server stuff
+      dataID = int(data[1]);
+      dataInfo = data[2];
     } // if client data exists
     return data;
   } // getClientData
@@ -176,6 +207,9 @@ class Network{
       String input = c.readString();
       input = input.substring(0, input.indexOf("\n"));
       data = split(input, ',');
+      dataCommand = data[0];
+      dataID = int(data[1]);
+      dataInfo = data[2];
     } // if client data exists
     return data;
   } // getClientData

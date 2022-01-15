@@ -215,43 +215,7 @@ void runGame(){
   }
 } // runGame
 
-void keyPressed(){
-  if(keyCode == 113){
-    japanese = !japanese;
-    print(japanese);
-  }
-  if(gameState == 0){
-    if(key == '1') network.startSingleplayer();
-    if(key == '2') network.startClient(network.ip, network.port);
-    if(key == '3') network.startServer();
-    if(key == '4') network.startDebug("localhost", network.port);
-  } else if(gameState == 5){ // waiting for players
-    if(key == '1') {
-      network.sendCommand("BEGIN");
-      setGameState(10);
-    }
-  } else if(gameState == 10){
-    if(!victory && !defeat){
-      if(keyCode == 112){ //F1
-        println("Word to guess is: "+ word);  
-      }
-      
-      if(cursorIndex == 5 && keyCode == ENTER){
-        submitWord();
-      } // submit word
-      
-      if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
-        inputWord[cursorIndex++] = key;
-      }
-      if(cursorIndex > 0 && keyCode == BACKSPACE)
-          inputWord[--cursorIndex] = 0;
-    } else {
-      if(keyCode == 82){ // 'r' to restart
-        resetGame();
-      } // press r to reset
-    } // if victory or defeat
-  } // gameState
-} // keyPressed
+// ---------- ---------- ---------- ---------- ----------
 
 void submitWord(){
   boolean isInWordlist = false;
@@ -285,18 +249,76 @@ void submitWord(){
   cursorIndex = 0;
 } // submitWord
 
-void resetGame(){
-  victory = false;
-      defeat = false;
-      word = wordlist[int(random(0, wordlist.length+1))].toString();
-      word.toLowerCase();
+String newWord(int wordLength){
+  String word = "";
+  word = wordlist[int(random(0, wordlist.length+1))].toString();
+  word.toLowerCase();
+  return word;
+} // newWord
 
-      for(int i = 0; i < 26; i++)
-        letters[i] = textColor;
-      guesses = new StringList();
+String newWord(){
+  return newWord(5);
+} // newWord - overloaded, default to 5
+
+void resetGame(){
+  resetGame(newWord());
+} // resetGame - overloaded, pick random word if no input
+
+void resetGame(String newWord){
+  victory = false;
+  defeat = false;
+  word = newWord;
+
+  for(int i = 0; i < 26; i++)
+    letters[i] = textColor;
+  guesses = new StringList();
 } // resetGame
 
 void setGameState(int gameState_){
   gameState = gameState_;
   network.printInfo("gameState " + gameState);
 } // setGameState
+
+
+
+// ---------- ---------- ---------- ---------- ----------
+
+void keyPressed(){
+  if(keyCode == 114){
+    if(network.host == Host.SERVER) gameState = 5;
+  }else if(keyCode == 113){ // F2
+    japanese = !japanese;
+    print(japanese);
+  } // custom keys
+  
+  if(gameState == 0){
+    if(key == '1') network.startSingleplayer();
+    if(key == '2') network.startClient(network.ip, network.port);
+    if(key == '3') network.startServer();
+    if(key == '4') network.startDebug("localhost", network.port);
+  } else if(gameState == 5){ // waiting for players
+    if(key == '1') {
+      setGameState(6);
+    }
+  } else if(gameState == 10){
+    if(!victory && !defeat){
+      if(keyCode == 112){ //F1
+        println("Word to guess is: "+ word);  
+      }
+      
+      if(cursorIndex == 5 && keyCode == ENTER){
+        submitWord();
+      } // submit word
+      
+      if(cursorIndex < 5 &&  Character.toString(key).matches("[a-z]+")){
+        inputWord[cursorIndex++] = key;
+      }
+      if(cursorIndex > 0 && keyCode == BACKSPACE)
+          inputWord[--cursorIndex] = 0;
+    } else {
+      if(keyCode == 82){ // 'r' to restart
+        resetGame();
+      } // press r to reset
+    } // if victory or defeat
+  } // gameState
+} // keyPressed
