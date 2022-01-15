@@ -49,7 +49,9 @@ color background = #121213;
 color textColor = #d7dadc;
 
 PFont mochi;
-//PFont lucida; don't see any way to get the default font and restore it, the P3 docs are irritating me
+PFont lucida;
+// MUNA - don't see any way to get the default font and restore it, the P3 docs are irritating me
+// BAZ - Default font is "Lucida Sans Regular";
 
 int gameState = 0;
 
@@ -63,7 +65,7 @@ void settings(){
 
 void setup(){
   mochi = createFont("source/MochiyPopOne-Regular.ttf", 50);
-  //lucida = loadFont("Dialog.plain-48");  
+  lucida = createFont("Lucida Sans Regular", 50);
 
   if(bazDebug) surface.setLocation(windowDebug,60);
   
