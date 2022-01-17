@@ -218,6 +218,15 @@ void runGame(){
   }
   popStyle();
   
+  pushStyle();
+  for(int i = 0; i < players.size(); i++){
+    Player p = players.get(i);
+    if(p != Me){
+      p.display(i);
+    } // if not me
+  } // display all players
+  popStyle();
+  
   if(!victory && !defeat){
     // Draw text cursor
     float x = letterSize*letterBoxRatio*cursorIndex;

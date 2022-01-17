@@ -87,13 +87,18 @@ class Network{
       
       case 6: // 6 starting game
       network.sendCommand("Begin Game");
+      network.sendCommand("Clear Players");
+      for(Player p : players){
+        network.sendCommand("Add Player", p.ID, p.name);
+      } // send each player
+      
       setGameState(7);
       break;
       
       case 7: // 7 sending word
       word = newWord();
       resetGame(word);
-      network.sendCommand("New Word",word);
+      network.sendCommand("New Word", word);
       setGameState(10);
       break;
       
@@ -116,6 +121,12 @@ class Network{
       
       case 6: // 6 waiting for begin command from server
       if(getCommand("Begin Game")) setGameState(7);
+      if(getCommand("Clear Players")) {
+        players = new ArrayList<Player>();
+        Me.reset();
+        players.add(Me);
+      } // clear players
+      if(getCommand("Add Player")) players.add(new Player(false, dataID, dataInfo));
       break;
       
       case 7: // 7 waiting for word
@@ -128,6 +139,9 @@ class Network{
       case 10:
       runGame();
       if(getCommand("Begin Game")) setGameState(7); // reset if server prompts
+      if(getCommand("Add Guess")){
+        
+      } // receive guess from players
       break; // 10 run game
       
       
@@ -212,7 +226,7 @@ class Network{
       dataInfo = data[2];
     } // if client data exists
     return data;
-  } // getClientData
+  } // getServerData
   
   // ---------- ---------- ---------- ---------- ----------
   
