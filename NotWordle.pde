@@ -110,9 +110,9 @@ void runGame(){
   background(background);
   textSize(letterSize);
   if(japanese){
-    textFont(mochi, letterSize*0.8);
+    textFont(mochi, letterSize);
   } else {
-    //textFont(lucida, letterSize);
+    textFont(lucida, letterSize);
   }
   // Draw empty grid squares
   pushStyle();
