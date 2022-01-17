@@ -16,6 +16,8 @@ String[] wordlistUncommon;
 
 int[] letters = new int[26];
 
+IntDict glyphs = new IntDict();
+
 boolean victory = false;
 boolean defeat = false;
 
@@ -129,24 +131,26 @@ void runGame(){
   for(int g = 0; g < guesses.size(); g++){
     for(int i = 0; i < 5; i++){
       boolean p = false;
+      char currentLetter = guesses.get(g).charAt(i);
+      int currentLetterIndex = currentLetter - 'a';
       for(int c = 0; c < 5; c++){
-        if(guesses.get(g).charAt(i) == word.charAt(c)){
-          if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor || letters[(guesses.get(g).charAt(i) - 'a')] == absent)
-            letters[(guesses.get(g).charAt(i) - 'a')] = present;
+        if(currentLetter == word.charAt(c)){
+          if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == absent)
+            letters[currentLetterIndex] = present;
           fill(present);
           p = true;
         } else {
-          if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor)
-            letters[(guesses.get(g).charAt(i) - 'a')] = absent;
+          if(letters[currentLetterIndex] == textColor)
+            letters[currentLetterIndex] = absent;
         }
       }
-     if(guesses.get(g).charAt(i) == word.charAt(i)){
-       if(letters[(guesses.get(g).charAt(i) - 'a')] == textColor || letters[(guesses.get(g).charAt(i) - 'a')] == present)
-         letters[(guesses.get(g).charAt(i) - 'a')] = correct;
+     if(currentLetter == word.charAt(i)){
+       if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == present)
+         letters[currentLetterIndex] = correct;
         fill(correct);
       } else if(!p){
         fill(absent);
-      }
+     }
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
 
@@ -233,6 +237,7 @@ void submitWord(){
   }
   if(isNewWord && isInWordlist){
     guesses.append(newGuess);
+    updateGlyphs(newGuess);
   } else {
     invalidWordTimerCur = invalidWordTimerMax;
     invalidWord = newGuess;
@@ -275,7 +280,33 @@ void setGameState(int gameState_){
   network.printInfo("gameState " + gameState);
 } // setGameState
 
-
+//MUNA - This is no good, but I don't want to delete it yet.
+void updateGlyphs(String guess){
+  for(int i = 0; i < guess.length(); i++){
+    String k = Character.toString(guess.charAt(i));
+    //if we haven't ever guessed this letter k
+    if(!glyphs.hasKey(k)){
+      // add k to the dict with the default color
+      glyphs.set(k, textColor);
+      
+      //figure out if k should be yellow by testing against each letter in the target word
+      for(int c = 0; c < word.length()-1; c++){
+        if(k.equals(Character.toString(word.charAt(c)))){
+          glyphs.set(k, present);
+        }
+      }
+      if(k.equals(Character.toString(word.charAt(i)))){
+        //if(glyphs.get(k) == textColor){
+          glyphs.set(k, correct);
+        //}
+      } else {
+        if(glyphs.get(k) == textColor){
+          glyphs.set(k, absent);
+        }
+      }
+    }
+  }
+}
 
 // ---------- ---------- ---------- ---------- ----------
 
