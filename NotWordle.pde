@@ -156,28 +156,8 @@ void runGame(){
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
   }
-  
-  // Color the letters
-  //for(int g = 0; g < guesses.size(); g++){
-  //  for(int i = 0; i < 5; i++){
-  //    char currentLetter = guesses.get(g).charAt(i);
-  //    int currentLetterIndex = currentLetter - 'a';
-  //    for(int c = 0; c < 5; c++){
-  //      if(currentLetter == word.charAt(c)){
-  //        if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == absent)
-  //          letters[currentLetterIndex] = present;
-  //      } else {
-  //        if(letters[currentLetterIndex] == textColor)
-  //          letters[currentLetterIndex] = absent;
-  //      }
-  //    }
-  //   if(currentLetter == word.charAt(i)){
-  //     if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == present)
-  //       letters[currentLetterIndex] = correct;
-  //    }
-  //  }
 
-    // Draw each letter in the current guess
+  // Draw each letter in the current guess
   for(int g = 0; g < guesses.size(); g++){
     for(int i = 0; i < 5; i++){
       fill(textColor);
@@ -185,6 +165,7 @@ void runGame(){
       text(guesses.get(g).toUpperCase().charAt(i), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*g)+letterSize/6);
     }
   }
+  
   if(guesses.size() > 0){
     if(guesses.get(guesses.size()-1).equals(word)){
       victory = true;
@@ -192,6 +173,7 @@ void runGame(){
       defeat = true;
     }
   }
+  
   pushStyle();
   textSize(letterSize);
   if(victory)
