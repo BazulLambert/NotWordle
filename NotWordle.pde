@@ -1,17 +1,15 @@
 // commentsAreForChumps = false;
 
-// Missing features:
-// 1. multiplayer
-// 2. sound
-// 3. animations
-// 4. better graphics
+// TODO LIST:
+// * multiplayer
+// * sound
+// * animations
+// * better graphics
+// * convert to using some kind of hashmap for characters
+// * japanese version
 
 // Bugs:
-// 1. Games freezes when pressing a ton of keys at once [DONE]
-// 2. Showing yellow letters when a green version is present
-// 3. Wordlist is really bad
-// 4. There is a lack of good words in the wordlist
-// 5. Have onscreen feedback when an unknown word is entered [DONE]
+// * Showing yellow letters when a green version is present
 
 String[] wordlist;
 String[] wordlistUncommon;
@@ -49,14 +47,12 @@ color background = #121213;
 color textColor = #d7dadc;
 
 PFont mochi;
-PFont lucida;
-// MUNA - don't see any way to get the default font and restore it, the P3 docs are irritating me
-// BAZ - Default font is "Lucida Sans Regular";
+PFont lucida; // BAZ - Default font is "Lucida Sans Regular";
 
 int gameState = 0;
 
 boolean japanese = false;
-//text("かわいい", 100,100);
+//MUNA - Does the current editor font support japanese? "かわいい"
 
 void settings(){
   size(800, 800);
