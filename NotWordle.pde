@@ -311,7 +311,7 @@ void setGameState(int gameState_){
   network.printInfo("gameState " + gameState);
 } // setGameState
 
-//MUNA - This is no good, but I don't want to delete it yet.
+// Update colors for each letter based on the input
 void updateGlyphs(String guess){
   for(int i = 0; i < guess.length(); i++){
     String k = Character.toString(guess.charAt(i));
