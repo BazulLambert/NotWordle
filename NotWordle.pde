@@ -201,7 +201,6 @@ void runGame(){
   popStyle();
   
   pushStyle();
-  println("P: " + players.size());
   for(int i = 0; i < players.size(); i++){
     Player p = players.get(i);
     //if(p != Me){

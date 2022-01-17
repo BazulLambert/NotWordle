@@ -145,15 +145,14 @@ class Network{
           Me.reset();
           players.add(Me);
         } // clear players
-        if(getCommand("Add Player")) { players.add(new Player(false, int(command[1]), command[2]));
-      println("P2: " + players.size()); }
+        if(getCommand("Add Player")) players.add(new Player(false, int(command[1]), command[2]));
+        if(getCommand("New Word")) resetGame(dataInfo);
         if(getCommand("Begin Game")) setGameState(7);
+        
         break;
         
         case 7: // 7 waiting for word
-        if(getCommand("New Word")){
-          resetGame(dataInfo);
-        }
+        if(getCommand("New Word")) resetGame(command[2]);
         setGameState(10);
         break;
         
