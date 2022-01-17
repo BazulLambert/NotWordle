@@ -264,6 +264,7 @@ void submitWord(){
   }
   if(isNewWord && isInWordlist){
     guesses.append(newGuess);
+    if(network.host == Host.CLIENT) network.sendWord(newGuess);
     updateGlyphs(newGuess);
   } else {
     invalidWord(isNewWord, newGuess);

@@ -109,7 +109,12 @@ class Network{
         setGameState(10);
         break;
         
-        //case 10: runGame(); break; // 10 run game
+        case 10:
+        if(getCommand("Add Guess")){
+          playerByID(int(command[1])).guesses.append(command[2]);
+          sendCommand(command);
+        } // add guess
+        break; // 10 run game
         
         default: break;
       } // switch gameState
@@ -145,7 +150,9 @@ class Network{
           Me.reset();
           players.add(Me);
         } // clear players
-        if(getCommand("Add Player")) players.add(new Player(false, int(command[1]), command[2]));
+        if(getCommand("Add Player")){
+          if(playerByID(int(command[1])) == null) players.add(new Player(false, int(command[1]), command[2]));
+        }
         if(getCommand("New Word")) resetGame(dataInfo);
         if(getCommand("Begin Game")) setGameState(7);
         
@@ -160,7 +167,7 @@ class Network{
         //runGame();
         if(getCommand("Begin Game")) setGameState(7); // reset if server prompts
         if(getCommand("Add Guess")){
-          
+          playerByID(int(command[1])).guesses.append(command[2]);
         } // receive guess from players
         break; // 10 run game
         
@@ -174,11 +181,17 @@ class Network{
     commands.clear();
   } // runClient
   
-  // -----
+  // ---------- ---------- ---------- ---------- ----------
   
   void sendWord(String word){
-    
+    sendCommand("Add Guess", word);
   } // sendWord
+  
+  // -----
+  
+  void sendCommand(String[] command){
+    sendCommand(command[0], int(command[1]), command[2]);
+  } // sendCommand
   
   void sendCommand(String command){
     sendCommand(command, Me.ID, "");
