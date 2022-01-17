@@ -22,10 +22,29 @@ class Player{
     name = name_;
   } // construct
   
-  void display(int x, int y){
+  void reset(){
+    guesses = new StringList();
+  } // reset
+  
+  void display(int num){
+    pushMatrix();
+    translate(20, 150 * num + 20);
     stroke(255);
     fill(0);
-    rect(x, y, 20, 20);
+    exit();
+    fill(255);
+    rect(0, 0, 50, 50);
+    for(int i = 0; i < guesses.size(); i++){
+      String g = guesses.get(1);
+      text(g, 10, 10 * i); 
+    } // for each guess
+    
+    popMatrix();
   } // display
   
 } // Player
+
+Player playerByID(int ID){
+  for(Player p : players) if(p.ID == ID) return p;
+  return null;
+} // playerByID

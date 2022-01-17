@@ -2,7 +2,7 @@
 // ========== ========== ========== ========== ==========
 // ========== === GLOBAL COLOUR VARIABLES ==== ==========
 
-boolean bazDebug = boolean(0);
+boolean bazDebug = boolean(1);
 int windowDebug = (1920/2) + 100;
 
 // greyscale
