@@ -29,21 +29,36 @@ class Player{
   
   void display(int num){
     pushMatrix();
-    translate(20, 150 * num + 200);
+    translate(20, 200 * num + 20);
     stroke(255);
     noFill();
-    rect(0, 0, 80, 100);
+    rect(0, 0, 130, 160);
     fill(255);
-    textSize(16);
+    textSize(18);
     
     textAlign(LEFT,BOTTOM);
     text(name + " " + ID, 0, 0);
     
+    //
+    //// change this to all use centered coords
+    //
+    
+    textAlign(LEFT, CENTER);
     for(int i = 0; i < guesses.size(); i++){
       String g = guesses.get(i);
+      color[] colors = getColors(g, word);
+      
       for(int j = 0; j < g.length(); j++){
         char ch = g.charAt(j);
-        text(ch, 15*j + 5, 15*i + 20);
+        int x = 24*j + 10;
+        int y = 24*i + 10;
+        
+        fill(colors[j]);
+        noStroke();
+        rect(x, y, 20, 20);
+        
+        fill(255);
+        if(victory || defeat) text((""+ch).toUpperCase(), x+5, y+7);
       } // for each letter
        
     } // for each guess
@@ -53,50 +68,29 @@ class Player{
   
   // -----
   
-  void drawGrid(){
-    pushStyle();
-  noFill();
-  stroke(absent);
-  strokeWeight(2);
-  for(int i = 0; i < guessesMax; i++){
-    for(int j = 0; j < 5; j++)
-      rect(pos.x + letterSize*letterBoxRatio*j, pos.y + letterSize*letterBoxRatio*i, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
-  }
-  popStyle();
-  
-  // Color the letter squares v2
-  int fill = absent;
-  for(int g = 0; g < guesses.size(); g++){
-    for(int i = 0; i < word.length(); i++){
-      for(int l = 0; l < guesses.get(g).length(); l++){
-        fill = absent;
-        char letterCur = guesses.get(g).charAt(i);
-        if(word.contains(Character.toString(letterCur))){
-          if(letterCur == word.charAt(i)){
-            fill = correct;
-          }
-          if(letterCur != word.charAt(i) && fill != correct){
-            fill = present;
-          }
-        } else {
-          fill = absent;
-        }
-      }
-      fill(fill);
-      rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
-    }
-  }
-  
-  // Draw each letter in the current guess
-  for(int g = 0; g < guesses.size(); g++){
-    for(int i = 0; i < 5; i++){
-      fill(textColor);
-      textAlign(CENTER, TOP);
-      text(guesses.get(g).toUpperCase().charAt(i), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*g)+letterSize/6);
-    }
-  }
-  
-  } // gridColors
+  color[] getColors(String guess, String word){
+    int len = word.length();
+    color[] col = new color[len];
+    
+    for(int i = 0; i < len; i++){
+      col[i] = absent;
+      char cG = guess.charAt(i);
+      char cW = word.charAt(i);
+      if(cG == cW) col[i] = correct;
+    } // for each pair of letters
+    
+    for(int c = 0; c < len; c++){
+      for(int w = 0; w < len; w++){
+        char cG = guess.charAt(c);
+        char cW = word.charAt(w); 
+          if(col[c] != correct){
+            if(cG == cW) col[c] = present;
+          } // if not already green
+      } // for each letter in word
+    } // for each letter in guess
+    
+    return col;
+  } // getColors
   
   // -----
   

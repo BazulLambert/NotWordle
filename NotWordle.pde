@@ -1,7 +1,7 @@
 // commentsAreForChumps = false;
 
 // TODO LIST:
-// * multiplayer
+// * multiplayer - NOW FUNCTIONAL
 // * sound
 // * animations
 // * better graphics
@@ -102,8 +102,6 @@ void draw(){
   } else {
     network.runNetwork();
   } // gameState check
-  
-  text(players.size(), 10, 50);
 } // draw
 
 void runMenu(){
@@ -307,6 +305,7 @@ void resetGame(String newWord){
   word = newWord;
   glyphs = new IntDict();
   guesses = new StringList();
+  for(Player p : players) p.reset();
 } // resetGame
 
 void setGameState(int gameState_){

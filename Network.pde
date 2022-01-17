@@ -285,7 +285,7 @@ class Network{
   } // printInfo
   
   void printInfo(String output){
-    println(frameCount + " " + commands.size() + " : " + network.host + " " + Me.ID + ": " + output);
+    if(printNetworkData) println(frameCount + " " + commands.size() + " : " + network.host + " " + Me.ID + ": " + output);
   } // printInfo
   
   

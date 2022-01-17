@@ -4,6 +4,7 @@
 
 boolean bazDebug = boolean(1);
 int windowDebug = 115;
+boolean printNetworkData = false;
 
 // greyscale
 color BLACK  = #000000;
