@@ -15,14 +15,15 @@ class Network{
   Client c; 
   String input;
   int ID;
-  //String data[];
   
   String ip =  "24.128.92.203";
   int port = 22985;
   
   PApplet applet;
   
-  ArrayList<Player> players = new ArrayList<Player>();
+  //ArrayList<Player> players = new ArrayList<Player>();
+  
+  String[] nullCommand = {"NULL","",""};
   
   // ---------- ---------- ---------- ---------- ----------
   
@@ -66,6 +67,7 @@ class Network{
       
       case SINGLE:
         if(gameState == 0) setGameState(10);
+        runGame(); break;
       case CLIENT:
       case DEBUG:
         runClient(); break;
@@ -77,76 +79,100 @@ class Network{
   // -----
   
   void runServer(){
-    switch(gameState){
-      case 0: break; // 0 waiting on game select
+    commands = getData();
+    if(commands.size() == 0) commands.add(nullCommand);
+    for(String[] com : commands){
+      command = com;
       
-      case 5: // 5 waiting for players
-      runMenu();
-      initPlayers();
-      break;
-      
-      case 6: // 6 starting game
-      network.sendCommand("Begin Game");
-      network.sendCommand("Clear Players");
-      for(Player p : players){
-        network.sendCommand("Add Player", p.ID, p.name);
-      } // send each player
-      
-      setGameState(7);
-      break;
-      
-      case 7: // 7 sending word
-      word = newWord();
-      resetGame(word);
-      network.sendCommand("New Word", word);
-      setGameState(10);
-      break;
-      
-      case 10: runGame(); break; // 10 run game
-      
-      default: break;
-    } // switch gameState
+      switch(gameState){
+        case 0: break; // 0 waiting on game select
+        
+        case 5: // 5 waiting for players
+        runMenu();
+        if(com[0].equals("Join Game")) players.add(new Player(false, int(command[1]), "Player"));
+        //initPlayers();
+        break;
+        
+        case 6: // 6 starting game
+        network.sendCommand("Clear Players");
+        for(Player p : players){
+          network.sendCommand("Add Player", p.ID, p.name);
+        } // send each player
+        network.sendCommand("Begin Game");
+        setGameState(7);
+        break;
+        
+        case 7: // 7 sending word
+        word = newWord();
+        resetGame(word);
+        network.sendCommand("New Word", word);
+        setGameState(10);
+        break;
+        
+        //case 10: runGame(); break; // 10 run game
+        
+        default: break;
+      } // switch gameState
+    } // for each command
+    
+    if(gameState == 5) runMenu();
+    if(gameState == 10) runGame();
+    
+    commands.clear();
   } // runServer
   
   // -----
   
   void runClient(){
-    switch(gameState){
-      case 0: break; // 0 waiting on game select
+    commands = getData();
+    if(commands.size() == 0) commands.add(nullCommand);
+    for(String[] com : commands){
+      command = com;
       
-      case 5: // 5 joining server
-      sendCommand("Join Game");
-      setGameState(6);
-      break;
-      
-      case 6: // 6 waiting for begin command from server
-      if(getCommand("Begin Game")) setGameState(7);
-      if(getCommand("Clear Players")) {
-        players = new ArrayList<Player>();
-        Me.reset();
-        players.add(Me);
-      } // clear players
-      if(getCommand("Add Player")) players.add(new Player(false, dataID, dataInfo));
-      break;
-      
-      case 7: // 7 waiting for word
-      if(getCommand("New Word")){
-        resetGame(dataInfo);
-      }
-      setGameState(10);
-      break;
-      
-      case 10:
-      runGame();
-      if(getCommand("Begin Game")) setGameState(7); // reset if server prompts
-      if(getCommand("Add Guess")){
+      switch(gameState){
         
-      } // receive guess from players
-      break; // 10 run game
-      
-      
-      default: break;
-    } // switch gameState
+        case 0: break; // 0 waiting on game select
+        
+        case 5: // 5 joining server
+        sendCommand("Join Game");
+        setGameState(6);
+        break;
+        
+        case 6: // 6 waiting for begin command from server
+        if(getCommand("Clear Players")) {
+          players = new ArrayList<Player>();
+          println("CLEARED PLAYERS");
+          Me.reset();
+          players.add(Me);
+        } // clear players
+        if(getCommand("Add Player")) { players.add(new Player(false, int(command[1]), command[2]));
+      println("P2: " + players.size()); }
+        if(getCommand("Begin Game")) setGameState(7);
+        break;
+        
+        case 7: // 7 waiting for word
+        if(getCommand("New Word")){
+          resetGame(dataInfo);
+        }
+        setGameState(10);
+        break;
+        
+        case 10:
+        //runGame();
+        if(getCommand("Begin Game")) setGameState(7); // reset if server prompts
+        if(getCommand("Add Guess")){
+          
+        } // receive guess from players
+        break; // 10 run game
+        
+        
+        default: break;
+      } // switch gameState
+    } // for each command
+    
+    if(gameState == 10) runGame();
+    
+    commands.clear();
   } // runClient
   
   // -----
@@ -168,65 +194,77 @@ class Network{
   } // sendCommand
   
   void sendCommand(String command, int ID, String info){
-    String output = command + ',' + ID +  ',' + info + "\n";
+    String output = command + ',' + ID +  ',' + info + "|";
     if(host == Host.CLIENT) c.write(output);
     if(host == Host.SERVER) s.write(output);
-    printInfo("COMMAND SENT: " + output);
+    printInfo("COMMAND SENT: <" + output + ">");
   } // sendCommand
   
   // -----
   
-  void initPlayers(){
-   String[] data = getData();
-   if(data != null){
-     if(data[0].equals("Join Game")) players.add(new Player(false, int(data[1]), "Player"));
-   } // if data exists
-  } // initGame
+  // ========== ========== ========== ========== ==========
+  // ========== ======== DATA MANGEMENT ======== ==========
+  // ========== ========== ========== ========== ==========
   
-  // -----
-  
+  ArrayList<String[]> commands = new ArrayList<String[]>();
+  String[] command;
   String dataCommand;
   int dataID;
   String dataInfo;
   
-  String[] getData(){
+  ArrayList getData(){
     if(host == Host.CLIENT) return getServerData();
     if(host == Host.SERVER) return getClientData();
     return null;
   } // getData
   
-  String[] getClientData(){
-    String[] data = null;
+  ArrayList getClientData(){
+    commands.clear();
+    commands = new ArrayList<String[]>();
     c = s.available();
+    String input = "";
+    if(c != null) input = c.readString();
     if(c != null){
-      String input = c.readString();
-      input = input.substring(0, input.indexOf("\n"));
-      data = split(input, ',');
-      dataCommand = data[0]; // messy, could be combined with server stuff
-      dataID = int(data[1]);
-      dataInfo = data[2];
-    } // if client data exists
-    return data;
+      String[] data = null;
+      String dataInput = input.substring(0, input.indexOf("|"));
+      data = split(dataInput, ',');
+      commands.add(data);
+      printInfo("RECEIVED: <" + dataInput + ">");
+      c = s.available();
+    } // while commands exist
+    return commands;
   } // getClientData
   
+  
+  ArrayList getServerData(){
+    commands.clear();
+    commands = new ArrayList<String[]>();
+    if(c.available() > 0){
+      int available = c.available();
+      String input = c.readString();
+      //println("A0 " + c.available());
+      //println("A1 " + input); // debug
+      String[] lastCommand = {"","",""};
+      
+      String[] inputCommands = split(input, '|');
+      
+      for(int i = 0; i < inputCommands.length-1; i++){
+        String[] inputData = split(inputCommands[i], ',');
+        printInfo(input.length() + " " + "RECEIVED: <" + inputCommands[i] + ">"); // debug
+        commands.add(new String[]{inputData[0], inputData[1]+"", inputData[2]});
+        
+      } // for each command
+      
+    } // if client data exists
+    
+    return commands;
+  } // getServerData
+  
+  
   boolean getCommand(String get){
-    String[] data = getData();
-    if(data != null) return data[0].equals(get);
+    if(command != null) return command[0].equals(get);
     return false;
   } // getCommand
-  
-  String[] getServerData(){
-    String[] data = null;
-    if(c.available() > 0){
-      String input = c.readString();
-      input = input.substring(0, input.indexOf("\n"));
-      data = split(input, ',');
-      dataCommand = data[0];
-      dataID = int(data[1]);
-      dataInfo = data[2];
-    } // if client data exists
-    return data;
-  } // getServerData
   
   // ---------- ---------- ---------- ---------- ----------
   
@@ -235,7 +273,7 @@ class Network{
   } // printInfo
   
   void printInfo(String output){
-    println(network.host + " " + Me.ID + ": " + output);
+    println(frameCount + " " + commands.size() + " : " + network.host + " " + Me.ID + ": " + output);
   } // printInfo
   
   

@@ -102,6 +102,8 @@ void draw(){
   } else {
     network.runNetwork();
   } // gameState check
+  
+  text(players.size(), 10, 50);
 } // draw
 
 void runMenu(){
@@ -109,7 +111,7 @@ void runMenu(){
   textSize(letterSize);
   String menuText = "";
   if(gameState == 0) menuText = "1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)";
-  if(gameState == 5) menuText = "Players ready: " + network.players.size() + "\n1 - Start game";
+  if(gameState == 5) menuText = "Players ready: " + players.size() + "\n1 - Start game";
   text(menuText, 50, 100);
   
 } // runMenu
@@ -199,11 +201,12 @@ void runGame(){
   popStyle();
   
   pushStyle();
+  println("P: " + players.size());
   for(int i = 0; i < players.size(); i++){
     Player p = players.get(i);
-    if(p != Me){
+    //if(p != Me){
       p.display(i);
-    } // if not me
+    //} // if not me
   } // display all players
   popStyle();
   

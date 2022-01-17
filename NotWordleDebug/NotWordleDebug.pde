@@ -14,8 +14,6 @@
 String[] wordlist;
 String[] wordlistUncommon;
 
-int[] letters = new int[26];
-
 IntDict glyphs = new IntDict();
 
 boolean victory = false;
@@ -84,9 +82,17 @@ void setup(){
   word = wordlist[int(random(0, wordlist.length))].toString();
   word.toLowerCase();
 
-  for(int i = 0; i < 26; i++)
-    letters[i] = textColor;
+  glyphs = new IntDict();
+  
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
+  
+  // MUNA Debug stuff
+  /*
+  word = "teams";
+  guesses.append("tests");
+  guesses.append("mines");
+  guesses.append("quirk");
+  */
   noStroke();
 } // setup
 
@@ -96,6 +102,8 @@ void draw(){
   } else {
     network.runNetwork();
   } // gameState check
+  
+  text(players.size(), 10, 50);
 } // draw
 
 void runMenu(){
@@ -103,7 +111,7 @@ void runMenu(){
   textSize(letterSize);
   String menuText = "";
   if(gameState == 0) menuText = "1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)";
-  if(gameState == 5) menuText = "Players ready: " + network.players.size() + "\n1 - Start game";
+  if(gameState == 5) menuText = "Players ready: " + players.size() + "\n1 - Start game";
   text(menuText, 50, 100);
   
 } // runMenu
@@ -127,40 +135,39 @@ void runGame(){
   }
   popStyle();
   
-  // Color the letter squares
+  
+  // Color the letter squares v2
+  int fill = absent;
   for(int g = 0; g < guesses.size(); g++){
-    for(int i = 0; i < 5; i++){
-      boolean p = false;
-      char currentLetter = guesses.get(g).charAt(i);
-      int currentLetterIndex = currentLetter - 'a';
-      for(int c = 0; c < 5; c++){
-        if(currentLetter == word.charAt(c)){
-          if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == absent)
-            letters[currentLetterIndex] = present;
-          fill(present);
-          p = true;
+    for(int i = 0; i < word.length(); i++){
+      for(int l = 0; l < guesses.get(g).length(); l++){
+        fill = absent;
+        char letterCur = guesses.get(g).charAt(i);
+        if(word.contains(Character.toString(letterCur))){
+          if(letterCur == word.charAt(i)){
+            fill = correct;
+          }
+          if(letterCur != word.charAt(i) && fill != correct){
+            fill = present;
+          }
         } else {
-          if(letters[currentLetterIndex] == textColor)
-            letters[currentLetterIndex] = absent;
+          fill = absent;
         }
       }
-     if(currentLetter == word.charAt(i)){
-       if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == present)
-         letters[currentLetterIndex] = correct;
-        fill(correct);
-      } else if(!p){
-        fill(absent);
-     }
+      fill(fill);
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
+  }
 
-    // Draw each letter in the current guess
+  // Draw each letter in the current guess
+  for(int g = 0; g < guesses.size(); g++){
     for(int i = 0; i < 5; i++){
       fill(textColor);
       textAlign(CENTER, TOP);
       text(guesses.get(g).toUpperCase().charAt(i), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*g)+letterSize/6);
     }
   }
+  
   if(guesses.size() > 0){
     if(guesses.get(guesses.size()-1).equals(word)){
       victory = true;
@@ -168,6 +175,7 @@ void runGame(){
       defeat = true;
     }
   }
+  
   pushStyle();
   textSize(letterSize);
   if(victory)
@@ -193,11 +201,12 @@ void runGame(){
   popStyle();
   
   pushStyle();
+  println("P: " + players.size());
   for(int i = 0; i < players.size(); i++){
     Player p = players.get(i);
-    if(p != Me){
+    //if(p != Me){
       p.display(i);
-    } // if not me
+    //} // if not me
   } // display all players
   popStyle();
   
@@ -211,7 +220,12 @@ void runGame(){
       rect(pos.x + x + letterSize/4,pos.y + y + letterSize*letterBoxRatio-cursorThick, letterSize, cursorThick);
     }
     for(int i = 0; i < cursorIndex; i++){
-        fill(letters[inputWord[i]-'a']);
+        String k = Character.toString(inputWord[i]);
+        if(glyphs.hasKey(k))
+          fill(glyphs.get(k));
+        else
+          fill(textColor);
+
         textAlign(CENTER, TOP);
         text(Character.toUpperCase(inputWord[i]), pos.x + (letterSize*letterBoxRatio*i) + letterSize*letterBoxRatio/2, (pos.y + letterSize*letterBoxRatio*guesses.size())+letterSize/6);
     }
@@ -219,7 +233,12 @@ void runGame(){
   textAlign(CENTER, BOTTOM);
   textSize(letterSize/1.6);
   for(int i = 0; i < 26; i++){
-    fill(letters[i]);
+    String k = Character.toString((char)(i + 'a'));
+    if(glyphs.hasKey(k)){
+          fill(glyphs.get(k));
+    } else {
+          fill(textColor);
+    }
     text(Character.toUpperCase((char)(i + 97)), (width/2 - (26*(letterSize/1.6)*1.0)/2) + (letterSize/1.6)*i*0.95 + (letterSize/1.6), height-(letterSize/1.6)/2);
   }
 } // runGame
@@ -286,9 +305,7 @@ void resetGame(String newWord){
   victory = false;
   defeat = false;
   word = newWord;
-
-  for(int i = 0; i < 26; i++)
-    letters[i] = textColor;
+  glyphs = new IntDict();
   guesses = new StringList();
 } // resetGame
 
@@ -297,7 +314,7 @@ void setGameState(int gameState_){
   network.printInfo("gameState " + gameState);
 } // setGameState
 
-//MUNA - This is no good, but I don't want to delete it yet.
+// Update colors for each letter based on the input
 void updateGlyphs(String guess){
   for(int i = 0; i < guess.length(); i++){
     String k = Character.toString(guess.charAt(i));
@@ -313,12 +330,16 @@ void updateGlyphs(String guess){
         }
       }
       if(k.equals(Character.toString(word.charAt(i)))){
-        //if(glyphs.get(k) == textColor){
           glyphs.set(k, correct);
-        //}
       } else {
         if(glyphs.get(k) == textColor){
           glyphs.set(k, absent);
+        }
+      }
+    } else {
+      if(glyphs.get(k) != absent){
+        if(k.equals(Character.toString(word.charAt(i)))){
+          glyphs.set(k, correct);
         }
       }
     }

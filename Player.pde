@@ -20,6 +20,7 @@ class Player{
     isMe = isMe_;
     ID = ID_;
     name = name_;
+    println("Player added: " + ID + " " + name);
   } // construct
   
   void reset(){
@@ -31,7 +32,6 @@ class Player{
     translate(20, 150 * num + 20);
     stroke(255);
     fill(0);
-    exit();
     fill(255);
     rect(0, 0, 50, 50);
     for(int i = 0; i < guesses.size(); i++){
