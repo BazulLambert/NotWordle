@@ -127,6 +127,31 @@ void runGame(){
   }
   popStyle();
   
+  
+  // Color the letter squares v2
+  // MUNA - Broken, but I don't care
+  //int fill = absent;
+  //for(int g = 0; g < guesses.size(); g++){
+  //  for(int i = 0; i < word.length(); i++){
+  //    for(int l = 0; l < guesses.get(g).length(); l++){
+  //      fill = absent;
+  //      char letterCur = guesses.get(g).charAt(l);
+  //      if(word.contains(Character.toString(letterCur))){
+  //        if(letterCur == word.charAt(l)){
+  //          fill = correct;
+  //        }
+  //        if(!(letterCur == word.charAt(l)) && fill != correct){
+  //          fill = present;
+  //        }
+  //      } else {
+  //        fill = absent;
+  //      }
+  //    }
+  //    fill(fill);
+  //    rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
+  //  }
+  //}
+  
   // Color the letter squares
   for(int g = 0; g < guesses.size(); g++){
     for(int i = 0; i < 5; i++){
@@ -151,6 +176,7 @@ void runGame(){
       } else if(!p){
         fill(absent);
      }
+      // MUNA - Disable to test v2
       rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
     }
 
