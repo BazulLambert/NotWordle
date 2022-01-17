@@ -87,6 +87,14 @@ void setup(){
   for(int i = 0; i < 26; i++)
     letters[i] = textColor;
   pos = new PVector(width/2-(5*letterSize*letterBoxRatio)/2, height/8);
+  
+  // MUNA Debug stuff
+  /*
+  word = "teams";
+  guesses.append("tests");
+  guesses.append("mines");
+  guesses.append("quirk");
+  */
   noStroke();
 } // setup
 
@@ -129,41 +137,37 @@ void runGame(){
   
   
   // Color the letter squares v2
-  // MUNA - Broken, but I don't care
-  //int fill = absent;
-  //for(int g = 0; g < guesses.size(); g++){
-  //  for(int i = 0; i < word.length(); i++){
-  //    for(int l = 0; l < guesses.get(g).length(); l++){
-  //      fill = absent;
-  //      char letterCur = guesses.get(g).charAt(l);
-  //      if(word.contains(Character.toString(letterCur))){
-  //        if(letterCur == word.charAt(l)){
-  //          fill = correct;
-  //        }
-  //        if(!(letterCur == word.charAt(l)) && fill != correct){
-  //          fill = present;
-  //        }
-  //      } else {
-  //        fill = absent;
-  //      }
-  //    }
-  //    fill(fill);
-  //    rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
-  //  }
-  //}
+  int fill = absent;
+  for(int g = 0; g < guesses.size(); g++){
+    for(int i = 0; i < word.length(); i++){
+      for(int l = 0; l < guesses.get(g).length(); l++){
+        fill = absent;
+        char letterCur = guesses.get(g).charAt(i);
+        if(word.contains(Character.toString(letterCur))){
+          if(letterCur == word.charAt(i)){
+            fill = correct;
+          }
+          if(letterCur != word.charAt(i) && fill != correct){
+            fill = present;
+          }
+        } else {
+          fill = absent;
+        }
+      }
+      fill(fill);
+      rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
+    }
+  }
   
-  // Color the letter squares
+  // Color the letters
   for(int g = 0; g < guesses.size(); g++){
     for(int i = 0; i < 5; i++){
-      boolean p = false;
       char currentLetter = guesses.get(g).charAt(i);
       int currentLetterIndex = currentLetter - 'a';
       for(int c = 0; c < 5; c++){
         if(currentLetter == word.charAt(c)){
           if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == absent)
             letters[currentLetterIndex] = present;
-          fill(present);
-          p = true;
         } else {
           if(letters[currentLetterIndex] == textColor)
             letters[currentLetterIndex] = absent;
@@ -172,12 +176,7 @@ void runGame(){
      if(currentLetter == word.charAt(i)){
        if(letters[currentLetterIndex] == textColor || letters[currentLetterIndex] == present)
          letters[currentLetterIndex] = correct;
-        fill(correct);
-      } else if(!p){
-        fill(absent);
-     }
-      // MUNA - Disable to test v2
-      rect(pos.x + letterSize*letterBoxRatio*i, pos.y + letterSize*letterBoxRatio*g, letterSize*letterBoxRatio, letterSize*letterBoxRatio, rectRadii);
+      }
     }
 
     // Draw each letter in the current guess
