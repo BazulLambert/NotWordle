@@ -239,16 +239,24 @@ void submitWord(){
     guesses.append(newGuess);
     updateGlyphs(newGuess);
   } else {
-    invalidWordTimerCur = invalidWordTimerMax;
-    invalidWord = newGuess;
-    invalidWordType = InvalidWordEnum.UNKNOWN;
-    if(!isNewWord){
-      invalidWordType = InvalidWordEnum.REUSED;
-    }
+    invalidWord(isNewWord, newGuess);
   }
+  resetCursor();
+} // submitWord
+
+void invalidWord(boolean isNewWord, String newGuess){
+  invalidWordTimerCur = invalidWordTimerMax;
+  invalidWord = newGuess;
+  invalidWordType = InvalidWordEnum.UNKNOWN;
+  if(!isNewWord){
+    invalidWordType = InvalidWordEnum.REUSED;
+  }
+} // invalidWord
+
+void resetCursor(){
   inputWord = new char[5];
   cursorIndex = 0;
-} // submitWord
+} // resetCursor
 
 String newWord(int wordLength){
   String word = "";

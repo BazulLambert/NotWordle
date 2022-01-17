@@ -86,14 +86,14 @@ class Network{
       break;
       
       case 6: // 6 starting game
-      network.sendCommand("BEGIN");
+      network.sendCommand("Begin Game");
       setGameState(7);
       break;
       
       case 7: // 7 sending word
       word = newWord();
       resetGame(word);
-      network.sendCommand("NEWWORD",word);
+      network.sendCommand("New Word",word);
       setGameState(10);
       break;
       
@@ -110,16 +110,16 @@ class Network{
       case 0: break; // 0 waiting on game select
       
       case 5: // 5 joining server
-      sendCommand("JOIN");
+      sendCommand("Join Game");
       setGameState(6);
       break;
       
       case 6: // 6 waiting for begin command from server
-      if(getCommand("BEGIN")) setGameState(7);
+      if(getCommand("Begin Game")) setGameState(7);
       break;
       
       case 7: // 7 waiting for word
-      if(getCommand("NEWWORD")){
+      if(getCommand("New Word")){
         resetGame(dataInfo);
         setGameState(10);
       }
@@ -127,7 +127,7 @@ class Network{
       
       case 10:
       runGame();
-      if(getCommand("BEGIN")) setGameState(7); // reset if server prompts
+      if(getCommand("Begin Game")) setGameState(7); // reset if server prompts
       break; // 10 run game
       
       
@@ -165,7 +165,7 @@ class Network{
   void initPlayers(){
    String[] data = getData();
    if(data != null){
-     if(data[0].equals("JOIN")) players.add(new Player(false, int(data[1]), "Player"));
+     if(data[0].equals("Join Game")) players.add(new Player(false, int(data[1]), "Player"));
    } // if data exists
   } // initGame
   
@@ -224,22 +224,6 @@ class Network{
     println(network.host + " " + Me.ID + ": " + output);
   } // printInfo
   
-  
-  // ---------- ---------- ---------- ---------- ----------
-  
-  class Player{
-    
-    boolean isMe;
-    int ID;
-    String name;
-    
-    Player(boolean isMe_, int ID_, String name_){
-      isMe = isMe_;
-      ID = ID_;
-      name = name_;
-    } // construct
-    
-  } // Player - subclass
   
   // ---------- ---------- ---------- ---------- ----------
   
