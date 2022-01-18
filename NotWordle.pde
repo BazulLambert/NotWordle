@@ -200,7 +200,7 @@ void runGame(){
   popStyle();
   
   pushStyle();
-  for(int i = 0; i < players.size()-2; i++){    
+  for(int i = 0; i < players.size(); i++){    
     Player p = players.get(i);
     int n = 0;
     if(p != Me && p.ID != -1){
