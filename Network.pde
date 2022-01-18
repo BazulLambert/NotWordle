@@ -30,7 +30,7 @@ class Network{
   Network(PApplet applet_){
     applet = applet_;
     ID = int(random(0,99999));
-    Me = new Player(true, ID, "Player");
+    Me = new Player(true, ID, localPlayerName);
     players.add(Me);
   } // construct
   
@@ -89,7 +89,7 @@ class Network{
         
         case 5: // 5 waiting for players
         runMenu();
-        if(com[0].equals("Join Game")) players.add(new Player(false, int(command[1]), "Player"));
+        if(com[0].equals("Join Game")) players.add(new Player(false, int(command[1]), localPlayerName));
         //initPlayers();
         break;
         
