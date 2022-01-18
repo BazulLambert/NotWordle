@@ -114,6 +114,10 @@ class Network{
           playerByID(int(command[1])).guesses.append(command[2]);
           sendCommand(command);
         } // add guess
+        if(getCommand("Add Score")){
+          playerByID(int(command[1])).addScore(int(command[2]));
+          sendCommand(command);
+        } // add score to player
         break; // 10 run game
         
         default: break;
@@ -169,6 +173,9 @@ class Network{
         if(getCommand("Add Guess")){
           playerByID(int(command[1])).guesses.append(command[2]);
         } // receive guess from players
+        if(getCommand("Add Score")){
+          playerByID(int(command[1])).addScore(int(command[2]));
+        } // add score to player
         break; // 10 run game
         
         

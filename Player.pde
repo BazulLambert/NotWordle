@@ -10,6 +10,8 @@ class Player{
   int ID;
   String name;
   
+  int score = 0;
+  
   // -----
   
   StringList guesses = new StringList();
@@ -37,7 +39,7 @@ class Player{
     textSize(18);
     
     textAlign(LEFT,BOTTOM);
-    text(name, 0, 0);
+    text(name + " - " + score, 0, 0);
     
     //
     //// change this to all use centered coords
@@ -93,6 +95,10 @@ class Player{
   } // getColors
   
   // -----
+  
+  void addScore(int i){
+    score += i;
+  } // addScore
   
 } // Player
 

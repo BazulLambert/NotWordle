@@ -52,7 +52,7 @@ PFont lucida; // BAZ - Default font is "Lucida Sans Regular";
 
 int gameState = 0;
 
-String localPlayerName = null;
+String localPlayerName = "Player";
 
 boolean japanese = false;
 //MUNA - Does the current editor font support japanese? "かわいい"
@@ -78,6 +78,8 @@ void setup(){
     if(lines[i].startsWith("playerName: ")){
       localPlayerName = lines[i].split(": ")[1];
       println("Local Name: "+ localPlayerName);
+    } else {
+      // MUNA - error logging someday?
     }
   }
 
@@ -126,11 +128,19 @@ void draw(){
 
 void runMenu(){
   background(0);
+  fill(textColor);
   textSize(letterSize);
   String menuText = "";
   if(gameState == 0) menuText = "1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)";
   if(gameState == 5) menuText = "Players ready: " + players.size() + "\n1 - Start game";
   text(menuText, 50, 100);
+  textSize(letterSize/2);
+  fill(MGREY);
+  if(localPlayerName.equals("Player")){
+    text("Username: Player (edit config.txt to change)", 50, height-20);
+  } else {
+    text("Username: "+localPlayerName, 50, height-20);
+  }
   
 } // runMenu
 
@@ -203,7 +213,7 @@ void runGame(){
   if(victory || defeat){
     textSize(letterSize/3);
     textAlign(CENTER, BOTTOM);
-    text("Press 'r' to restart", width/2, letterSize+letterSize/2);
+    if(network.host == Host.SINGLE) text("Press 'r' to restart", width/2, letterSize+letterSize/2);
   }
   if(invalidWord != null && invalidWordTimerCur >= 0){
     fill(textColor, (invalidWordTimerCur/invalidWordTimerMax) * 255);
@@ -284,7 +294,10 @@ void submitWord(){
   }
   if(isNewWord && isInWordlist){
     guesses.append(newGuess);
-    if(network.host == Host.CLIENT) network.sendWord(newGuess);
+    if(network.host == Host.CLIENT){
+      network.sendWord(newGuess);
+      network.sendCommand("Add Score", "1");
+    } // if client
     updateGlyphs(newGuess);
   } else {
     invalidWord(isNewWord, newGuess);
@@ -370,7 +383,7 @@ void updateGlyphs(String guess){
 // ---------- ---------- ---------- ---------- ----------
 
 void keyPressed(){
-  if(keyCode == 114){
+  if(keyCode == 114){ // F3
     if(network.host == Host.SERVER) gameState = 5;
   }else if(keyCode == 113){ // F2
     japanese = !japanese;
@@ -402,7 +415,7 @@ void keyPressed(){
       if(cursorIndex > 0 && keyCode == BACKSPACE)
           inputWord[--cursorIndex] = 0;
     } else {
-      if(keyCode == 82){ // 'r' to restart
+      if(keyCode == 82 && network.host == Host.SINGLE){ // 'r' to restart
         resetGame();
       } // press r to reset
     } // if victory or defeat

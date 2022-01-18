@@ -213,7 +213,7 @@ void runGame(){
   if(victory || defeat){
     textSize(letterSize/3);
     textAlign(CENTER, BOTTOM);
-    text("Press 'r' to restart", width/2, letterSize+letterSize/2);
+    if(network.host == Host.SINGLE) text("Press 'r' to restart", width/2, letterSize+letterSize/2);
   }
   if(invalidWord != null && invalidWordTimerCur >= 0){
     fill(textColor, (invalidWordTimerCur/invalidWordTimerMax) * 255);
@@ -294,7 +294,10 @@ void submitWord(){
   }
   if(isNewWord && isInWordlist){
     guesses.append(newGuess);
-    if(network.host == Host.CLIENT) network.sendWord(newGuess);
+    if(network.host == Host.CLIENT){
+      network.sendWord(newGuess);
+      network.sendCommand("Add Score", "1");
+    } // if client
     updateGlyphs(newGuess);
   } else {
     invalidWord(isNewWord, newGuess);
@@ -380,7 +383,7 @@ void updateGlyphs(String guess){
 // ---------- ---------- ---------- ---------- ----------
 
 void keyPressed(){
-  if(keyCode == 114){
+  if(keyCode == 114){ // F3
     if(network.host == Host.SERVER) gameState = 5;
   }else if(keyCode == 113){ // F2
     japanese = !japanese;
@@ -412,7 +415,7 @@ void keyPressed(){
       if(cursorIndex > 0 && keyCode == BACKSPACE)
           inputWord[--cursorIndex] = 0;
     } else {
-      if(keyCode == 82){ // 'r' to restart
+      if(keyCode == 82 && network.host == Host.SINGLE){ // 'r' to restart
         resetGame();
       } // press r to reset
     } // if victory or defeat
