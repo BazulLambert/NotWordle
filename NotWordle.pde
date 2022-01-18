@@ -52,7 +52,7 @@ PFont lucida; // BAZ - Default font is "Lucida Sans Regular";
 
 int gameState = 0;
 
-String localPlayerName = null;
+String localPlayerName = "Player";
 
 boolean japanese = false;
 //MUNA - Does the current editor font support japanese? "かわいい"
@@ -78,6 +78,8 @@ void setup(){
     if(lines[i].startsWith("playerName: ")){
       localPlayerName = lines[i].split(": ")[1];
       println("Local Name: "+ localPlayerName);
+    } else {
+      // MUNA - error logging someday?
     }
   }
 
@@ -126,11 +128,19 @@ void draw(){
 
 void runMenu(){
   background(0);
+  fill(textColor);
   textSize(letterSize);
   String menuText = "";
   if(gameState == 0) menuText = "1 - Start singleplayer\n2 - Connect to server\n3 - Host server\n4 - Self client (debug)";
   if(gameState == 5) menuText = "Players ready: " + players.size() + "\n1 - Start game";
   text(menuText, 50, 100);
+  textSize(letterSize/2);
+  fill(MGREY);
+  if(localPlayerName.equals("Player")){
+    text("Username: Player (edit config.txt to change)", 50, height-20);
+  } else {
+    text("Username: "+localPlayerName, 50, height-20);
+  }
   
 } // runMenu
 
