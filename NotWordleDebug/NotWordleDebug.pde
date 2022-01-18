@@ -7,6 +7,7 @@
 // * better graphics
 // * convert to using some kind of hashmap for characters
 // * japanese version
+// * allow players to add usernames
 
 // Bugs:
 // * Showing yellow letters when a green version is present
@@ -199,11 +200,13 @@ void runGame(){
   popStyle();
   
   pushStyle();
-  for(int i = 0; i < players.size(); i++){
+  for(int i = 0; i < players.size()-2; i++){    
     Player p = players.get(i);
-    //if(p != Me){
-      p.display(i);
-    //} // if not me
+    int n = 0;
+    if(p != Me && p.ID != -1){
+      p.display(n);
+      n++;
+    } // if not me
   } // display all players
   popStyle();
   
