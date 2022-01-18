@@ -134,8 +134,11 @@ void runMenu(){
   text(menuText, 50, 100);
   textSize(letterSize/2);
   fill(MGREY);
-  if(localPlayerName == "Player") text("Username: Player (edit config.txt to change)", 50, height-20);
-  else text("Username: "+localPlayerName, 50, height-20);
+  if(localPlayerName.equals("Player")){
+    text("Username: Player (edit config.txt to change)", 50, height-20);
+  } else {
+    text("Username: "+localPlayerName, 50, height-20);
+  }
   
 } // runMenu
 
