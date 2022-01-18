@@ -37,7 +37,7 @@ class Player{
     textSize(18);
     
     textAlign(LEFT,BOTTOM);
-    text(name + " " + ID, 0, 0);
+    text(name, 0, 0);
     
     //
     //// change this to all use centered coords

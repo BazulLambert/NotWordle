@@ -222,7 +222,7 @@ void runGame(){
   int playerNum = 0;
   for(int i = 0; i < players.size(); i++){    
     Player p = players.get(i);
-    if(p != Me && p.ID != -1){
+    if(p.ID != Me.ID && p.ID != -1){
       p.display(playerNum);
       playerNum++;
     } // if not me

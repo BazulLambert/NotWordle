@@ -52,6 +52,8 @@ PFont lucida; // BAZ - Default font is "Lucida Sans Regular";
 
 int gameState = 0;
 
+String localPlayerName = null;
+
 boolean japanese = false;
 //MUNA - Does the current editor font support japanese? "かわいい"
 
@@ -64,6 +66,21 @@ void setup(){
   mochi = createFont("source/MochiyPopOne-Regular.ttf", 50);
   lucida = createFont("Lucida Sans Regular", 50);
 
+  // MUNA - Load config and set localPlayerName
+  String[] lines = loadStrings("config.txt");
+  if(lines == null){
+    lines = new String[1];
+    lines[0] = "playerName: Player";
+    saveStrings("config.txt", lines);
+  }
+  lines = loadStrings("config.txt");
+  for(int i = 0; i < lines.length; i++){
+    if(lines[i].startsWith("playerName: ")){
+      localPlayerName = lines[i].split(": ")[1];
+      println("Local Name: "+ localPlayerName);
+    }
+  }
+
   if(bazDebug) surface.setLocation(windowDebug,60);
   
   network = new Network(this);
@@ -71,6 +88,8 @@ void setup(){
   PImage icon = loadImage("source/icon.png");
   surface.setIcon(icon);
   frameRate(60);
+  
+  
   
   wordlist = loadStrings("source/wordlist.txt");
   if(wordlist == null)
@@ -203,7 +222,7 @@ void runGame(){
   int playerNum = 0;
   for(int i = 0; i < players.size(); i++){    
     Player p = players.get(i);
-    if(p != Me && p.ID != -1){
+    if(p.ID != Me.ID && p.ID != -1){
       p.display(playerNum);
       playerNum++;
     } // if not me

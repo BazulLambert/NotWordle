@@ -9,7 +9,7 @@ enum Host{SERVER,CLIENT,SINGLE,DEBUG};
 class Network{
   
   Host host;
-  Player Me;
+  //Player Me;
   
   Server s;
   Client c; 
@@ -30,7 +30,7 @@ class Network{
   Network(PApplet applet_){
     applet = applet_;
     ID = int(random(0,99999));
-    Me = new Player(true, ID, "Player");
+    Me = new Player(true, ID, localPlayerName);
     players.add(Me);
   } // construct
   
@@ -89,7 +89,7 @@ class Network{
         
         case 5: // 5 waiting for players
         runMenu();
-        if(com[0].equals("Join Game")) players.add(new Player(false, int(command[1]), "Player"));
+        if(com[0].equals("Join Game")) players.add(new Player(false, int(command[1]), command[2]));
         //initPlayers();
         break;
         
@@ -194,7 +194,7 @@ class Network{
   } // sendCommand
   
   void sendCommand(String command){
-    sendCommand(command, Me.ID, "");
+    sendCommand(command, Me.ID, Me.name);
   } // sendCommand
   
   void sendCommand(String command, String info){
