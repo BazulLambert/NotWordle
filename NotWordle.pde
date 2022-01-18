@@ -200,12 +200,12 @@ void runGame(){
   popStyle();
   
   pushStyle();
+  int playerNum = 0;
   for(int i = 0; i < players.size(); i++){    
     Player p = players.get(i);
-    int n = 0;
     if(p != Me && p.ID != -1){
-      p.display(n);
-      n++;
+      p.display(playerNum);
+      playerNum++;
     } // if not me
   } // display all players
   popStyle();
