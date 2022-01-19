@@ -237,6 +237,8 @@ void runGame(){
       playerNum++;
     } // if not me
   } // display all players
+  textSize(16);
+  text(Me.name + " - " + Me.score, 400, 100-25);
   popStyle();
   
   if(!victory && !defeat){
